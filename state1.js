@@ -71,7 +71,7 @@ demo.state1.prototype = {
         //Create a group of Zombies 
         zombies = game.add.group();
         zombies.enableBody = true;       
-		zombies.damageAmount = 10;
+		zombies.damageAmount = 1;
         //create zombies 
         for ( var i = 0; i<50; i++)
         {
@@ -144,25 +144,26 @@ demo.state1.prototype = {
 		healthBar.render = function(){
 		healthBar.text = 'HEALTH : '+ player.health +'%';    
 		};
-	
+		healthBar.fixedToCamera = true;
+		healthBar.cameraOffset.setTo(2,5);
+		
         //DISPLAY HOUSE
 		//CREATES TOP LAYER OF THE MAP, RENDERED ABOVE ALL ELSE
-		houselayer = map.createLayer('house');
 		house = game.add.sprite(1938,1279,'house');
 		house.health = 10000;
-		house.damage= 10;
 		house.anchor.setTo(.5,1.0);
-		house.enableBody = true;
-		
-		
+		game.physics.enable(house);
+        house.body.collideWorldBounds = true;
+		//House Health Text Bar
 		houseHealth = game.add.text(game.world.width - 150,10,'HOUSE: ' + house.health +'%', {font:'20px Cambria', fill: '#fa0a0a'});
 		houseHealth.render = function(){
 		houseHealth.text = 'HOUSE : '+ house.health +'%';    
 		};
-		healthBar.fixedToCamera = true;
-		healthBar.cameraOffset.setTo(2,5);
 		houseHealth.fixedToCamera = true;
 		houseHealth.cameraOffset.setTo(2,30);
+
+		
+		
 		
         	
     },
@@ -179,11 +180,12 @@ demo.state1.prototype = {
 		playerDistance = game.physics.arcade.distanceBetween(zombie, player, false)
 		
         //causes zombies to constantly move towards player
-        zombies.forEach(game.physics.arcade.moveToObject, game.physics.arcade, false, player, 100);
+
         game.physics.arcade.collide(zombies, zombies);
         game.physics.arcade.collide(zombies, collisions);
         game.physics.arcade.collide(player, collisions);
 		game.physics.arcade.collide(house,zombie);
+		game.physics.arcade.collide(house,collisions);
         
         
         //checks zombieAngle between zombies and player and adjusts animation accordingly
@@ -326,7 +328,13 @@ demo.state1.prototype = {
             bullet.rotation = game.physics.arcade.angleToPointer(bullet);
         }
     },
-    	
+   	collideHouse: function(house,zombie)
+	{
+		houseHealth.render();
+		house.health-=10;
+		
+	},
+    
     //give hunter health and other game objects health
 	collidePlayer: function(player, zombie)
 	{
@@ -334,13 +342,7 @@ demo.state1.prototype = {
 		player.health-= 10;
 
 	},
-		collideHouse: function(house,zombie)
-	{
-		houseHealth.render();
-		house.health-=10;
-		
-	},
-    
+
     hitGroup: function(enemy, bullet) {
         bullet.kill();
         enemy.damage(20);
