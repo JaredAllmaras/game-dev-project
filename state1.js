@@ -26,9 +26,7 @@ demo.state1.prototype = {
         game.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
         
         //Grid used for zombie pathing
-        gameWidth = 4000 / 32;
-        gameHeight = 3200 / 32;
-        pathingGrid = new PF.Grid(gameWidth, gameHeight);
+
         //Initializes a pathfinder object which utilizes A* algorithm 
         pathFinder = new PF.AStarFinder();
         
@@ -47,8 +45,7 @@ demo.state1.prototype = {
         }
         
         
-        pathingGrid = new PF.Grid(mapCopy);
-        
+        pathingGrid = new PF.Grid(mapCopy);        
         
         //LOADING MAP ASSETS AND MAP LAYERS
         var map = game.add.tilemap('field');
@@ -136,7 +133,7 @@ demo.state1.prototype = {
             zombie.health = 100;
             
             zombieTwo =
-            zombies.create(game.world.randomX,game.world.randomY,'zombie');
+            houseZombies.create(game.world.randomX,game.world.randomY,'zombie');
             zombieTwo.body.collideWorldBounds = true;
             zombieTwo.scale.setTo(0.7, 0.7);
             zombieTwo.anchor.setTo(0.5, 0.5);
@@ -204,14 +201,17 @@ demo.state1.prototype = {
         //causes zombies to constantly move towards player
         zombies.forEach(game.physics.arcade.moveToObject, game.physics.arcade, false, player, 100);
         game.physics.arcade.collide(zombies, zombies);
+        game.physics.arcade.collide(houseZombies, houseZombies);
+        game.physics.arcade.collide(houseZombies, zombies);
+        game.physics.arcade.collide(houseZombies, collisions);
         game.physics.arcade.collide(zombies, collisions);
         game.physics.arcade.collide(player, collisions);
-		game.physics.arcade.collide(house,zombie);
+
         
         
         //checks zombieAngle between zombies and player and adjusts animation accordingly
         //angle measured in radians and range normalized to [0,2pi]
-		if((houseDistance)>(playerDistance)){
+
 		zombies.forEach(game.physics.arcade.moveToObject, game.physics.arcade, false, player, 100);
 			
 		zombies.forEach(function(self) {
@@ -230,11 +230,11 @@ demo.state1.prototype = {
                 self.animations.play('upRight');
             }},
            	 game.physics.arcade, false);
-		}
-		else{
-			zombies.forEach(game.physics.arcade.moveToObject, game.physics.arcade, false, house, 200);
-			zombies.forEach(function(self) {
-            zombieAngle = (Phaser.Math.normalizeAngle(game.physics.arcade.angleBetween(self, house)))
+
+
+			houseZombies.forEach(game.physics.arcade.moveToObject, game.physics.arcade, false, house, 200);
+			houseZombies.forEach(function(self) {
+            houseZombieAngle = (Phaser.Math.normalizeAngle(game.physics.arcade.angleBetween(self, house)))
             
             if(zombieAngle >= 0 && zombieAngle <= 1.5708) {
                 self.animations.play('downRight');
@@ -249,7 +249,7 @@ demo.state1.prototype = {
                 self.animations.play('upRight');
             }},
            	 game.physics.arcade, false);
-		}
+
         //game controls for player
         if(cursors.up.isDown){
             player.body.velocity.y = -vel;
@@ -325,6 +325,7 @@ demo.state1.prototype = {
     	}
         
         game.physics.arcade.overlap(zombies, bullets, this.hitGroup);
+        game.physics.arcade.overlap(houseZombies, bullets, this.hitGroup);
 		game.physics.arcade.overlap(player, zombies, this.collidePlayer);
 		game.physics.arcade.overlap(house, zombies, this.collideHouse);
 
