@@ -65,7 +65,54 @@ demo.state1.prototype = {
         map.setCollision(157, true, 'collisions');
 		
 			
-		/////////////////////////////////////////////////
+		
+        
+        //Create Bullets and the group
+		bullets = game.add.group();
+		bullets.enableBody = true;
+		bullets.physicsBodyType = Phaser.Physics.ARCADE;
+		
+		bullets.createMultiple(50, 'bullet');
+		bullets.setAll('checkWorldBounds',true);
+		bullets.setAll('outOfBoundsKill', true);
+        bullets.damage = 10;
+		
+        
+        //creates a listener for keyboard input
+        cursors = game.input.keyboard.createCursorKeys();
+        
+        //CREATES ANOTHER MAP LAYER RENDERED ON TOP OF BULLETS 
+        fence = map.createLayer('fence');
+        
+        /////////////////////////////////////////////////////
+        //CODE FOR PLAYER
+		/////////////////////////////////////////////////////
+        //enables physics to player and sets player settings
+        player = game.add.sprite(1938,1279, 'hunter');
+        game.physics.enable(player);
+        player.body.collideWorldBounds = true;
+        player.scale.setTo(0.7, 0.7);
+        player.anchor.setTo(0.5, 0.5);
+        game.camera.follow(player);
+        
+        player.animations.add('upRight', [0, 1, 2, 3], 9, true);
+        player.animations.add('upLeft', [4, 5, 6, 7], 9, true);
+        player.animations.add('right', [8, 9, 10, 11], 9, true);
+        player.animations.add('left', [12, 13, 14, 15], 9, true);
+        player.animations.add('downRight', [16, 17, 18, 19], 9, true);
+        player.animations.add('downLeft', [20, 21, 22, 23], 9, true);
+        player.animations.add('up', [24, 25, 26,27], 9, true);
+        player.animations.add('down', [28, 29, 30, 31], 9, true);
+        player.health = 100;
+        player.damage = 10;
+        
+		player.events.onKilled.add(function(){
+			//PUT ANIMATION HERE FOR HUNTER DYING
+			player.kill();
+		});
+	
+
+        /////////////////////////////////////////////////
 		//CODE FOR ZOMBIES
 		////////////////////////////////////////////////
         //Create a group of Zombies 
@@ -114,51 +161,6 @@ demo.state1.prototype = {
         houseZombies.callAll('animations.add', 'animations', 'bloodSplatter' [0, 1, 2, 3, 4, 5, 6], 16, true);
                 
         
-        //Create Bullets and the group
-		bullets = game.add.group();
-		bullets.enableBody = true;
-		bullets.physicsBodyType = Phaser.Physics.ARCADE;
-		
-		bullets.createMultiple(50, 'bullet');
-		bullets.setAll('checkWorldBounds',true);
-		bullets.setAll('outOfBoundsKill', true);
-        bullets.damage = 10;
-		
-        
-        //creates a listener for keyboard input
-        cursors = game.input.keyboard.createCursorKeys();
-        
-        //CREATES ANOTHER MAP LAYER RENDERED ON TOP OF BULLETS 
-        fence = map.createLayer('fence');
-        
-        /////////////////////////////////////////////////////
-        //CODE FOR PLAYER
-		/////////////////////////////////////////////////////
-        //enables physics to player and sets player settings
-        player = game.add.sprite(1938,1279, 'hunter');
-        game.physics.enable(player);
-        player.body.collideWorldBounds = true;
-        player.scale.setTo(0.7, 0.7);
-        player.anchor.setTo(0.5, 0.5);
-        game.camera.follow(player);
-        
-        player.animations.add('upRight', [0, 1, 2, 3], 9, true);
-        player.animations.add('upLeft', [4, 5, 6, 7], 9, true);
-        player.animations.add('right', [8, 9, 10, 11], 9, true);
-        player.animations.add('left', [12, 13, 14, 15], 9, true);
-        player.animations.add('downRight', [16, 17, 18, 19], 9, true);
-        player.animations.add('downLeft', [20, 21, 22, 23], 9, true);
-        player.animations.add('up', [24, 25, 26,27], 9, true);
-        player.animations.add('down', [28, 29, 30, 31], 9, true);
-        player.health = 100;
-        player.damage = 10;
-        
-		player.events.onKilled.add(function(){
-			//PUT ANIMATION HERE FOR HUNTER DYING
-			player.kill();
-		});
-	
-
 		
 		//DISPLAY HEALTH
 		healthBar = game.add.text(game.world.width - 150,10,'HEALTH: ' + player.health +'%', {font:'20px Cambria', fill: '#fa0a0a'});
