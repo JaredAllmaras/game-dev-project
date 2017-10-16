@@ -234,18 +234,18 @@ demo.state1.prototype = {
 
 			houseZombies.forEach(game.physics.arcade.moveToObject, game.physics.arcade, false, house, 200);
 			houseZombies.forEach(function(self) {
-            houseZombieAngle = (Phaser.Math.normalizeAngle(game.physics.arcade.angleBetween(self, house)))
+            var houseZombieAngle = (Phaser.Math.normalizeAngle(game.physics.arcade.angleBetween(self, house)))
             
-            if(zombieAngle >= 0 && zombieAngle <= 1.5708) {
+            if(houseZombieAngle >= 0 && houseZombieAngle <= 1.5708) {
                 self.animations.play('downRight');
             }
-            if(zombieAngle > 1.5708 && zombieAngle <= 3.14159) {
+            if(houseZombieAngle > 1.5708 && houseZombieAngle <= 3.14159) {
                 self.animations.play('downLeft');
             }
-            if(zombieAngle > 3.14159 && zombieAngle <= 4.71239) {
+            if(houseZombieAngle > 3.14159 && houseZombieAngle <= 4.71239) {
                 self.animations.play('upLeft');
             }
-            if(zombieAngle > 4.71239 && zombieAngle <= 6.28319) {
+            if(houseZombieAngle > 4.71239 && houseZombieAngle <= 6.28319) {
                 self.animations.play('upRight');
             }},
            	 game.physics.arcade, false);
@@ -328,6 +328,7 @@ demo.state1.prototype = {
         game.physics.arcade.overlap(houseZombies, bullets, this.hitGroup);
 		game.physics.arcade.overlap(player, zombies, this.collidePlayer);
 		game.physics.arcade.overlap(house, zombies, this.collideHouse);
+        game.physics.arcade.overlap(house, bullets, this.hitWall);
 
     },  
 	
@@ -344,6 +345,7 @@ demo.state1.prototype = {
             bullet = bullets.getFirstDead();
 
             bullet.reset(barrelX, barrelY);
+            bullet.anchor.setTo(0.5, 0.5);
 
             //bulletVelocity = 300 + Phaser.Math.abs(playerVelocity);
             game.physics.arcade.moveToPointer(bullet, 800);
@@ -364,6 +366,10 @@ demo.state1.prototype = {
 		house.health-=10;
 		
 	},
+    
+    hitHouse: function(house, bullet) {
+      bullet.kill()
+    },
     
     hitGroup: function(enemy, bullet) {
         bullet.kill();
