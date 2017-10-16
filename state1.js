@@ -152,6 +152,7 @@ demo.state1.prototype = {
 		house = game.add.sprite(1938,1279,'house');
 		house.health = 10000;
 		house.anchor.setTo(.5,1.0);
+		house.enableBody = false;
 		game.physics.enable(house);
         house.body.collideWorldBounds = true;
 		//House Health Text Bar
@@ -185,7 +186,6 @@ demo.state1.prototype = {
         game.physics.arcade.collide(zombies, collisions);
         game.physics.arcade.collide(player, collisions);
 		game.physics.arcade.collide(house,zombie);
-		game.physics.arcade.collide(house,collisions);
         
         
         //checks zombieAngle between zombies and player and adjusts animation accordingly
