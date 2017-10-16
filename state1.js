@@ -1,5 +1,5 @@
 //Start of gameplay
-var cursors, vel = 200, pathFinder, gameWidth, gameHeight, tileSize = 32, collisions, grass, player,zombie, zombies, barrelX, barrelY ,bullet, bullets, fireRate = 100, nextFire = 200,  healthBar, pathingGrid, house, houseHealth, houseDistance, playerDistance;
+var cursors, vel = 200, pathFinder, gameWidth, gameHeight, tileSize = 32, collisions, grass, player,zombie, zombieTwo,houseZombies, zombies, barrelX, barrelY ,bullet, bullets, fireRate = 100, nextFire = 200,  healthBar, pathingGrid;
 
 demo.state1 = function(){};
 
@@ -26,9 +26,7 @@ demo.state1.prototype = {
         game.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
         
         //Grid used for zombie pathing
-        gameWidth = 4000 / 32;
-        gameHeight = 3200 / 32;
-        pathingGrid = new PF.Grid(gameWidth, gameHeight);
+
         //Initializes a pathfinder object which utilizes A* algorithm 
         pathFinder = new PF.AStarFinder();
         
@@ -40,15 +38,14 @@ demo.state1.prototype = {
         
         for (var row = 0 ; row > mapCopyWidth; row += 1) {
             for (var col = 0 ; col > mapCopyHeight; col += 1) {
-                if (mapCopy[row][col] == 157) {
+                if (mapCopy[row][col] != 1 && mapCopy[row][col] != 0) {
                     mapCopy[row][col] = 1;
                 }
             }
         }
         
         
-        pathingGrid = new PF.Grid(mapCopy);
-        
+        pathingGrid = new PF.Grid(mapCopy);        
         
         //LOADING MAP ASSETS AND MAP LAYERS
         var map = game.add.tilemap('field');
@@ -77,6 +74,7 @@ demo.state1.prototype = {
         {
             zombie =
             zombies.create(game.world.randomX,game.world.randomY,'zombie');
+            zombies.create(100,100,'zombie');
             zombie.body.collideWorldBounds = true;
             zombie.scale.setTo(0.7, 0.7);
             zombie.anchor.setTo(0.5, 0.5);
@@ -92,6 +90,8 @@ demo.state1.prototype = {
         zombies.callAll('animations.add', 'animations', 'downRight', [8, 9, 10, 11], 8, true);
         zombies.callAll('animations.add', 'animations', 'bloodSplatter' [0, 1, 2, 3, 4, 5, 6], 16, true);
                 
+
+		
         
         //Create Bullets and the group
 		bullets = game.add.group();
@@ -138,6 +138,55 @@ demo.state1.prototype = {
 		});
 	
 
+        /////////////////////////////////////////////////
+		//CODE FOR ZOMBIES
+		////////////////////////////////////////////////
+        //Create a group of Zombies 
+        zombies = game.add.group();
+        zombies.enableBody = true;       
+		zombies.damageAmount = 10;
+        
+        houseZombies = game.add.group();
+        houseZombies.enableBody = true;       
+		houseZombies.damageAmount = 10;
+        
+        //create zombies 
+        for ( var i = 0; i<50; i++)
+        {
+            zombie =
+            zombies.create(game.world.randomX,game.world.randomY,'zombie');
+            zombie.body.collideWorldBounds = true;
+            zombie.scale.setTo(0.7, 0.7);
+            zombie.anchor.setTo(0.5, 0.5);
+            zombie.alive = true;
+            zombie.health = 100;
+            
+            zombieTwo =
+            houseZombies.create(game.world.randomX,game.world.randomY,'zombie');
+            zombieTwo.body.collideWorldBounds = true;
+            zombieTwo.scale.setTo(0.7, 0.7);
+            zombieTwo.anchor.setTo(0.5, 0.5);
+            zombieTwo.alive = true;
+            zombieTwo.health = 100;
+        }
+        
+        
+        //adds animations to zombies group
+        zombies.callAll('animations.add', 'animations', 'upLeft', [4, 5, 6, 7], 8, true);
+        zombies.callAll('animations.add', 'animations', 'upRight', [0, 1, 2, 3], 8, true);
+        zombies.callAll('animations.add', 'animations', 'downLeft', [12, 13, 14, 15], 8, true);
+        zombies.callAll('animations.add', 'animations', 'downRight', [8, 9, 10, 11], 8, true);
+        zombies.callAll('animations.add', 'animations', 'bloodSplatter' [0, 1, 2, 3, 4, 5, 6], 16, true);
+
+        
+        //adds animations to zombies group
+        houseZombies.callAll('animations.add', 'animations', 'upLeft', [4, 5, 6, 7], 8, true);
+        houseZombies.callAll('animations.add', 'animations', 'upRight', [0, 1, 2, 3], 8, true);
+        houseZombies.callAll('animations.add', 'animations', 'downLeft', [12, 13, 14, 15], 8, true);
+        houseZombies.callAll('animations.add', 'animations', 'downRight', [8, 9, 10, 11], 8, true);
+        houseZombies.callAll('animations.add', 'animations', 'bloodSplatter' [0, 1, 2, 3, 4, 5, 6], 16, true);
+                
+        
 		
 		//DISPLAY HEALTH
 		healthBar = game.add.text(game.world.width - 150,10,'HEALTH: ' + player.health +'%', {font:'20px Cambria', fill: '#fa0a0a'});
@@ -151,10 +200,7 @@ demo.state1.prototype = {
 		//CREATES TOP LAYER OF THE MAP, RENDERED ABOVE ALL ELSE
 		house = game.add.sprite(1938,1279,'house');
 		house.health = 10000;
-		house.anchor.setTo(.5,1.0);
-		house.enableBody = false;
-		game.physics.enable(house);
-        house.body.collideWorldBounds = true;
+
 		//House Health Text Bar
 		houseHealth = game.add.text(game.world.width - 150,10,'HOUSE: ' + house.health +'%', {font:'20px Cambria', fill: '#fa0a0a'});
 		houseHealth.render = function(){
@@ -162,11 +208,14 @@ demo.state1.prototype = {
 		};
 		houseHealth.fixedToCamera = true;
 		houseHealth.cameraOffset.setTo(2,30);
+		game.physics.enable(house);
+		
+		house.anchor.setTo(.5,1.0);
+		house.enableBody = true;
+		house.body.immovable = true;
+		house.body.moves = false;
 
-		
-		
-		
-        	
+		        	
     },
     
     update: function() {
@@ -183,14 +232,17 @@ demo.state1.prototype = {
         //causes zombies to constantly move towards player
 
         game.physics.arcade.collide(zombies, zombies);
+        game.physics.arcade.collide(houseZombies, houseZombies);
+        game.physics.arcade.collide(houseZombies, zombies);
+        game.physics.arcade.collide(houseZombies, collisions);
         game.physics.arcade.collide(zombies, collisions);
         game.physics.arcade.collide(player, collisions);
-		game.physics.arcade.collide(house,zombie);
+
         
         
         //checks zombieAngle between zombies and player and adjusts animation accordingly
         //angle measured in radians and range normalized to [0,2pi]
-		if((houseDistance)>(playerDistance)){
+
 		zombies.forEach(game.physics.arcade.moveToObject, game.physics.arcade, false, player, 100);
 			
 		zombies.forEach(function(self) {
@@ -211,9 +263,14 @@ demo.state1.prototype = {
            	 game.physics.arcade, false);
 		}
 		else{
-			zombies.forEach(game.physics.arcade.moveToObject, game.physics.arcade, false, house, 200);
+			zombies.forEach(game.physics.arcade.moveToObject, game.physics.arcade, false, house, 100);
 			zombies.forEach(function(self) {
             zombieAngle = (Phaser.Math.normalizeAngle(game.physics.arcade.angleBetween(self, house)))
+
+
+			houseZombies.forEach(game.physics.arcade.moveToObject, game.physics.arcade, false, house, 200);
+			houseZombies.forEach(function(self) {
+            houseZombieAngle = (Phaser.Math.normalizeAngle(game.physics.arcade.angleBetween(self, house)))
             
             if(zombieAngle >= 0 && zombieAngle <= 1.5708) {
                 self.animations.play('downRight');
@@ -228,7 +285,7 @@ demo.state1.prototype = {
                 self.animations.play('upRight');
             }},
            	 game.physics.arcade, false);
-		}
+
         //game controls for player
         if(cursors.up.isDown){
             player.body.velocity.y = -vel;
@@ -304,6 +361,7 @@ demo.state1.prototype = {
     	}
         
         game.physics.arcade.overlap(zombies, bullets, this.hitGroup);
+        game.physics.arcade.overlap(houseZombies, bullets, this.hitGroup);
 		game.physics.arcade.overlap(player, zombies, this.collidePlayer);
 		game.physics.arcade.overlap(house, zombies, this.collideHouse);
 
