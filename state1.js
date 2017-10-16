@@ -142,7 +142,7 @@ demo.state1.prototype = {
         //Create a group of Zombies 
         zombies = game.add.group();
         zombies.enableBody = true;       
-		zombies.damageAmount = 40;
+		zombies.damageAmount = 10;
         
         houseZombies = game.add.group();
         houseZombies.enableBody = true;       
@@ -259,10 +259,11 @@ demo.state1.prototype = {
                 self.animations.play('upRight');
             }},
            	 game.physics.arcade, false);
-		
+
+
 			houseZombies.forEach(game.physics.arcade.moveToObject, game.physics.arcade, false, house, 200);
 			houseZombies.forEach(function(self) {
-            houseZombieAngle = (Phaser.Math.normalizeAngle(game.physics.arcade.angleBetween(self, house)))
+            var houseZombieAngle = (Phaser.Math.normalizeAngle(game.physics.arcade.angleBetween(self, house)))
             
             if(houseZombieAngle >= 0 && houseZombieAngle <= 1.5708) {
                 self.animations.play('downRight');
@@ -356,6 +357,7 @@ demo.state1.prototype = {
         game.physics.arcade.overlap(houseZombies, bullets, this.hitGroup);
 		game.physics.arcade.overlap(player, zombies, this.collidePlayer);
 		game.physics.arcade.overlap(house, zombies, this.collideHouse);
+        game.physics.arcade.overlap(house, bullets, this.hitWall);
 
     },  
 	
@@ -372,6 +374,7 @@ demo.state1.prototype = {
             bullet = bullets.getFirstDead();
 
             bullet.reset(barrelX, barrelY);
+            bullet.anchor.setTo(0.5, 0.5);
 
             //bulletVelocity = 300 + Phaser.Math.abs(playerVelocity);
             game.physics.arcade.moveToPointer(bullet, 800);
@@ -393,6 +396,17 @@ demo.state1.prototype = {
 
 	},
 
+		collideHouse: function(house,zombie)
+	{
+		houseHealth.render();
+		house.health-=10;
+		
+	},
+    
+    hitHouse: function(house, bullet) {
+      bullet.kill()
+    },
+    
     hitGroup: function(enemy, bullet) {
         bullet.kill();
         enemy.damage(20);
