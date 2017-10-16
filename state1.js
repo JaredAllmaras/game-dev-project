@@ -61,36 +61,7 @@ demo.state1.prototype = {
         
         map.setCollision(157, true, 'collisions');
 		
-			
-		/////////////////////////////////////////////////
-		//CODE FOR ZOMBIES
-		////////////////////////////////////////////////
-        //Create a group of Zombies 
-        zombies = game.add.group();
-        zombies.enableBody = true;       
-		zombies.damageAmount = 1;
-        //create zombies 
-        for ( var i = 0; i<50; i++)
-        {
-            zombie =
-            zombies.create(game.world.randomX,game.world.randomY,'zombie');
-            zombies.create(100,100,'zombie');
-            zombie.body.collideWorldBounds = true;
-            zombie.scale.setTo(0.7, 0.7);
-            zombie.anchor.setTo(0.5, 0.5);
-            zombie.alive = true;
-            zombie.health = 100;
-        }
-        
-        
-        //adds animations to zombies group
-        zombies.callAll('animations.add', 'animations', 'upLeft', [4, 5, 6, 7], 8, true);
-        zombies.callAll('animations.add', 'animations', 'upRight', [0, 1, 2, 3], 8, true);
-        zombies.callAll('animations.add', 'animations', 'downLeft', [12, 13, 14, 15], 8, true);
-        zombies.callAll('animations.add', 'animations', 'downRight', [8, 9, 10, 11], 8, true);
-        zombies.callAll('animations.add', 'animations', 'bloodSplatter' [0, 1, 2, 3, 4, 5, 6], 16, true);
-                
-
+			        
         //Create Bullets and the group
 		bullets = game.add.group();
 		bullets.enableBody = true;
@@ -261,8 +232,9 @@ demo.state1.prototype = {
            	 game.physics.arcade, false);
 
 
-			houseZombies.forEach(game.physics.arcade.moveToObject, game.physics.arcade, false, house, 200);
-			houseZombies.forEach(function(self) {
+        houseZombies.forEach(game.physics.arcade.moveToObject, game.physics.arcade, false, house, 200);
+        
+        houseZombies.forEach(function(self) {
             var houseZombieAngle = (Phaser.Math.normalizeAngle(game.physics.arcade.angleBetween(self, house)))
             
             if(houseZombieAngle >= 0 && houseZombieAngle <= 1.5708) {
@@ -374,7 +346,6 @@ demo.state1.prototype = {
             bullet = bullets.getFirstDead();
 
             bullet.reset(barrelX, barrelY);
-            bullet.anchor.setTo(0.5, 0.5);
 
             //bulletVelocity = 300 + Phaser.Math.abs(playerVelocity);
             game.physics.arcade.moveToPointer(bullet, 800);
