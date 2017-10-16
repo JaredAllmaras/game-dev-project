@@ -91,8 +91,6 @@ demo.state1.prototype = {
         zombies.callAll('animations.add', 'animations', 'bloodSplatter' [0, 1, 2, 3, 4, 5, 6], 16, true);
                 
 
-		
-        
         //Create Bullets and the group
 		bullets = game.add.group();
 		bullets.enableBody = true;
@@ -144,7 +142,7 @@ demo.state1.prototype = {
         //Create a group of Zombies 
         zombies = game.add.group();
         zombies.enableBody = true;       
-		zombies.damageAmount = 10;
+		zombies.damageAmount = 40;
         
         houseZombies = game.add.group();
         houseZombies.enableBody = true;       
@@ -261,27 +259,21 @@ demo.state1.prototype = {
                 self.animations.play('upRight');
             }},
            	 game.physics.arcade, false);
-		}
-		else{
-			zombies.forEach(game.physics.arcade.moveToObject, game.physics.arcade, false, house, 100);
-			zombies.forEach(function(self) {
-            zombieAngle = (Phaser.Math.normalizeAngle(game.physics.arcade.angleBetween(self, house)))
-
-
+		
 			houseZombies.forEach(game.physics.arcade.moveToObject, game.physics.arcade, false, house, 200);
 			houseZombies.forEach(function(self) {
             houseZombieAngle = (Phaser.Math.normalizeAngle(game.physics.arcade.angleBetween(self, house)))
             
-            if(zombieAngle >= 0 && zombieAngle <= 1.5708) {
+            if(houseZombieAngle >= 0 && houseZombieAngle <= 1.5708) {
                 self.animations.play('downRight');
             }
-            if(zombieAngle > 1.5708 && zombieAngle <= 3.14159) {
+            if(houseZombieAngle > 1.5708 && houseZombieAngle <= 3.14159) {
                 self.animations.play('downLeft');
             }
-            if(zombieAngle > 3.14159 && zombieAngle <= 4.71239) {
+            if(houseZombieAngle > 3.14159 && houseZombieAngle <= 4.71239) {
                 self.animations.play('upLeft');
             }
-            if(zombieAngle > 4.71239 && zombieAngle <= 6.28319) {
+            if(houseZombieAngle > 4.71239 && houseZombieAngle <= 6.28319) {
                 self.animations.play('upRight');
             }},
            	 game.physics.arcade, false);
