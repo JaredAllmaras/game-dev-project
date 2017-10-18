@@ -129,6 +129,7 @@ demo.state1.prototype = {
             zombie.anchor.setTo(0.5, 0.5);
             zombie.alive = true;
             zombie.health = 100;
+            zombie.body.setSize(32, 42, 8, 15);
             
             zombieTwo =
             houseZombies.create(game.world.randomX,game.world.randomY,'zombie');
@@ -169,6 +170,7 @@ demo.state1.prototype = {
 		//CREATES TOP LAYER OF THE MAP, RENDERED ABOVE ALL ELSE
 		house = game.add.sprite(1938,1279,'house');
 		house.health = 10000;
+        
 
 		//House Health Text Bar
 		houseHealth = game.add.text(game.world.width - 150,10,'HOUSE: ' + house.health +'%', {font:'20px Cambria', fill: '#fa0a0a'});
@@ -180,6 +182,7 @@ demo.state1.prototype = {
 		game.physics.enable(house);
 		
 		house.anchor.setTo(.5,1.0);
+        house.body.setSize(480, 160, 0, 128);
 		house.enableBody = true;
 		house.body.immovable = true;
 		house.body.moves = false;
@@ -328,12 +331,14 @@ demo.state1.prototype = {
         game.physics.arcade.overlap(zombies, bullets, this.hitGroup);
         game.physics.arcade.overlap(houseZombies, bullets, this.hitGroup);
 		game.physics.arcade.overlap(player, zombies, this.collidePlayer);
-		game.physics.arcade.overlap(house, zombies, this.collideHouse);
-        game.physics.arcade.overlap(house, bullets, this.hitWall);
+		game.physics.arcade.overlap(house, houseZombies, this.collideHouse);
+        game.physics.arcade.overlap(house, bullets, this.hitHouse);
 
     },  
 	
 	render: function(){
+        game.debug.body(zombie);
+        game.debug.body(house);
 	},
 
     
@@ -367,7 +372,7 @@ demo.state1.prototype = {
 
 	},
 
-		collideHouse: function(house,zombie)
+    collideHouse: function(house,zombie)
 	{
 		houseHealth.render();
 		house.health-=10;
