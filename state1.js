@@ -107,10 +107,6 @@ demo.state1.prototype = {
         player.health = 100;
         player.damage = 10;
         
-        player.events.onKilled.add(function(){
-			//PUT ANIMATION HERE FOR HUNTER DYING
-            player.kill();
-		});
 	
 
         /////////////////////////////////////////////////
@@ -157,7 +153,6 @@ demo.state1.prototype = {
         
         zombies.forEach(function(self) {
             gridBackup = grid.clone();
-            console.log(gridBackup);
             path = pathFinder.findPath(Math.floor(self.x / 32),Math.floor(self.y / 32), Math.floor(house.x / 32), Math.floor(house.y / 32), gridBackup);
             self.setPath(path);
         },
@@ -208,6 +203,10 @@ demo.state1.prototype = {
     update: function() {
         //IF STATEMENT FOR ENDING THE GAME - "If point value hits 0"
         
+        if (player.health <= 0 || house.health <= 0) {
+            player.kill();
+            game.state.start('state2');
+        }
         
         //causes zombies to constantly move towards player
 		//IF STATEMENT TO MOVE CLOSER TO HOUSE OR PLAYER
@@ -404,6 +403,7 @@ demo.state1.prototype = {
         game.physics.arcade.overlap(zombies, bullets, this.hitGroup);
         game.physics.arcade.overlap(houseZombies, bullets, this.hitGroup);
 		game.physics.arcade.overlap(player, zombies, this.collidePlayer);
+        game.physics.arcade.overlap(player, houseZombies, this.collidePlayer);
 		game.physics.arcade.overlap(house, houseZombies, this.collideHouse);
         game.physics.arcade.overlap(collisions[0], bullets, this.hitHouse);
     },  
@@ -479,7 +479,9 @@ demo.state1.prototype = {
             matrix[k].push(list[i]);
         }
         return matrix;
-    }
+    },
+    
+    //placeCrate: function(tile, )
     /*
     findObjectsByType: function(type, map, layer) {
         var result = new Array();

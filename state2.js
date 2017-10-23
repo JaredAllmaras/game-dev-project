@@ -1,5 +1,3 @@
-//END SCREEN
-var demo = {};
 var text;
 var counter = 0;
 demo.state2 = function(){};
@@ -20,7 +18,7 @@ demo.state2.prototype = {
 
         text = game.add.text(100, 80, '', { fill: '#ffffff' });
 
-        image.events.onInputDown.add(listener, this);
+        //image.events.onInputDown.add(listener, this);
 
     },
     update: function(){
