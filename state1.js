@@ -127,6 +127,9 @@ demo.state1.prototype = {
         houseZombies.enableBody = true;       
 		houseZombies.damageAmount = 0.01;	
 
+		//create range of int for zombies to be created
+		 Phaser.RandomDataGenerator.intergetInRange(2000,)
+		
         
         //create zombies 
         for ( var i = 0; i<5; i++)
@@ -165,7 +168,7 @@ demo.state1.prototype = {
 		healthBoosts = game.add.group();
 		healthBoosts.enableBody = true;
 		//create health boost in random places 
-		for (var i =0; i<100; i++){
+		for (var i =0; i<50; i++){
 			healthBoost = healthBoosts.create(game.world.randomX, game.world.randomY, 'health-boost');
 			
 			healthBoost.anchor.setTo(0.5,0.5);
@@ -183,13 +186,15 @@ demo.state1.prototype = {
 		house.health = 100;
 
 		//House Health Text Bar
-		houseHealth = game.add.text(game.world.width - 150,10,'HOUSE: ' + Math.round(house.health) +'%', {font:'20px Cambria', fill: '#fa0a0a'});
+		houseHealth = game.add.text(game.world.width - 150,10,'HOUSE: ' + Math.round(house.health) +'%', {font:'20px Cambria', fill: '#eeb8a4'});
+		houseHealth.style.backgroundColor = '#b20000'
+		houseHealth.style.fontWeight = 'bold'
 		houseHealth.render = function(){
 		houseHealth.text = 'HOUSE : '+ Math.round(house.health) +'%';    
 		};
 		
 		houseHealth.fixedToCamera = true;
-		houseHealth.cameraOffset.setTo(2,30);
+		houseHealth.cameraOffset.setTo(2,35);
         
         //House Anchoring
         game.physics.enable(house);		
@@ -230,9 +235,13 @@ demo.state1.prototype = {
 		
 				
 		//DISPLAY HEALTH
-		healthBar = game.add.text(game.world.width - 150,10,'HEALTH: ' + Math.round(player.health) +'%', {font:'20px Cambria', fill: '#fa0a0a'});
+		healthBar = game.add.text(game.world.width - 150,10,'HEALTH: ' + Math.round(player.health) +'%', {font:'20px Cambria', fill: '#ab2001'});
+		healthBar.style.backgroundColor = '#ea9a89';
+		healthBar.style.fontWeight ='bold';
+
 		healthBar.render = function(){
-		healthBar.text = 'HEALTH : '+ Math.round(player.health) +'%';    
+
+		healthBar.text = 'HEALTH : '+ Math.round(player.health) +'%';  
 		};
 		healthBar.fixedToCamera = true;
 		healthBar.cameraOffset.setTo(2,5);
