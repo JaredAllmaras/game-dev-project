@@ -1,5 +1,5 @@
 //Start of gameplay
-var cursors, vel = 200, pathFinder, gameWidth, gameHeight, tileSize = 32, collisions, grass, player,zombie, zombieTwo,houseZombies, zombies, barrelX, barrelY ,bullet, bullets, fireRate = 100, nextFire = 200,  healthBar, pathingGrid;
+var cursors, vel = 200, pathFinder, gameWidth, gameHeight, tileSize = 32, collisions, grass, player, zombie, zombieTwo, houseZombies, zombies, barrelX, barrelY ,bullet, bullets, fireRate = 100, nextFire = 200, house, healthBar, path, pathFinder, grid, gridBackup;
 
 demo.state1 = function(){};
 
@@ -24,28 +24,23 @@ demo.state1.prototype = {
         game.stage.backgroundColor = '#DDDDDD';
         game.world.setBounds(0, 0, 4000, 3200);
         game.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
-        
-        //Grid used for zombie pathing
-
-        //Initializes a pathfinder object which utilizes A* algorithm 
-        pathFinder = new PF.AStarFinder();
+        game.renderer.renderSession.roundPixels = true;
         
         //Loads a copy of of the collision layer
         var collisionLayer = game.cache.getJSON('gameMap');
         var mapCopy = collisionLayer.layers[0].data;
         var mapCopyWidth = mapCopy.length;
-        var mapCopyHeight = mapCopy[0].length;
         
-        for (var row = 0 ; row > mapCopyWidth; row += 1) {
-            for (var col = 0 ; col > mapCopyHeight; col += 1) {
-                if (mapCopy[row][col] != 1 && mapCopy[row][col] != 0) {
-                    mapCopy[row][col] = 1;
-                }
+        for (var i = 0; i < mapCopyWidth; i++) {
+            if ((mapCopy[i] != 1 ) && (mapCopy[i] != 0)) { 
+                mapCopy[i] = 1;
             }
         }
         
         
-        pathingGrid = new PF.Grid(mapCopy);        
+        var mapMatrix = this.listToMatrix(mapCopy, 125);
+        grid = new PF.Grid(mapMatrix);
+        pathFinder = new PF.AStarFinder();
         
         //LOADING MAP ASSETS AND MAP LAYERS
         var map = game.add.tilemap('field');
@@ -101,9 +96,9 @@ demo.state1.prototype = {
         player.health = 100;
         player.damage = 10;
         
-		player.events.onKilled.add(function(){
+        player.events.onKilled.add(function(){
 			//PUT ANIMATION HERE FOR HUNTER DYING
-			player.kill();
+            player.kill();
 		});
 	
 
@@ -117,60 +112,61 @@ demo.state1.prototype = {
         
         houseZombies = game.add.group();
         houseZombies.enableBody = true;       
-		houseZombies.damageAmount = 10;
-        
-        //create zombies 
-        for ( var i = 0; i<50; i++)
-        {
-            zombie =
-            zombies.create(game.world.randomX,game.world.randomY,'zombie');
-            zombie.body.collideWorldBounds = true;
-            zombie.scale.setTo(0.7, 0.7);
-            zombie.anchor.setTo(0.5, 0.5);
-            zombie.alive = true;
-            zombie.health = 100;
-            zombie.body.setSize(32, 42, 8, 15);
-            
-            zombieTwo =
-            houseZombies.create(game.world.randomX,game.world.randomY,'zombie');
-            zombieTwo.body.collideWorldBounds = true;
-            zombieTwo.scale.setTo(0.7, 0.7);
-            zombieTwo.anchor.setTo(0.5, 0.5);
-            zombieTwo.alive = true;
-            zombieTwo.health = 100;
-        }
-        
-        
-        //adds animations to zombies group
-        zombies.callAll('animations.add', 'animations', 'upLeft', [4, 5, 6, 7], 8, true);
-        zombies.callAll('animations.add', 'animations', 'upRight', [0, 1, 2, 3], 8, true);
-        zombies.callAll('animations.add', 'animations', 'downLeft', [12, 13, 14, 15], 8, true);
-        zombies.callAll('animations.add', 'animations', 'downRight', [8, 9, 10, 11], 8, true);
-        zombies.callAll('animations.add', 'animations', 'bloodSplatter' [0, 1, 2, 3, 4, 5, 6], 16, true);
-
-        
-        //adds animations to zombies group
-        houseZombies.callAll('animations.add', 'animations', 'upLeft', [4, 5, 6, 7], 8, true);
-        houseZombies.callAll('animations.add', 'animations', 'upRight', [0, 1, 2, 3], 8, true);
-        houseZombies.callAll('animations.add', 'animations', 'downLeft', [12, 13, 14, 15], 8, true);
-        houseZombies.callAll('animations.add', 'animations', 'downRight', [8, 9, 10, 11], 8, true);
-        houseZombies.callAll('animations.add', 'animations', 'bloodSplatter' [0, 1, 2, 3, 4, 5, 6], 16, true);
-                
-        
-		
-		//DISPLAY HEALTH
-		healthBar = game.add.text(game.world.width - 150,10,'HEALTH: ' + player.health +'%', {font:'20px Cambria', fill: '#fa0a0a'});
-		healthBar.render = function(){
-		healthBar.text = 'HEALTH : '+ player.health +'%';    
-		};
-		healthBar.fixedToCamera = true;
-		healthBar.cameraOffset.setTo(2,5);
+		houseZombies.damageAmount = 10;	
 		
         //DISPLAY HOUSE
 		//CREATES TOP LAYER OF THE MAP, RENDERED ABOVE ALL ELSE
 		house = game.add.sprite(1938,1279,'house');
 		house.health = 10000;
         
+        //create zombies 
+        for ( var i = 0; i<50; i++)
+        {
+ 
+            var randomX = game.world.randomX;
+            var randomY = game.world.randomY;
+            zombie = new Zombie(game, randomX, randomY, player);
+            
+            //path = pathFinder.findPath(zombie.x, zombie.y, player.x, player.y, gridBackup);
+            //zombie.setPath(path);
+            zombies.add(zombie);
+
+            randomX = game.world.randomX;
+            randomY = game.world.randomY;
+
+            gridBackup = grid.clone();
+            randomX = game.world.randomX;
+            randomY = game.world.randomY;
+            zombieTwo = new Zombie(game, randomX, randomY, house);
+            //path = pathFinder.findPath(zombieTwo.x, zombieTwo.y, house.x, house.y, gridBackup);
+            //zombieTwo.setPath(path);
+            houseZombies.add(zombieTwo);
+            
+        }
+        
+        zombies.forEach(function(self) {
+            gridBackup = grid.clone();
+            console.log(gridBackup);
+            path = pathFinder.findPath(Math.floor(self.x / 32),Math.floor(self.y / 32), Math.floor(house.x / 32), Math.floor(house.y / 32), gridBackup);
+            self.setPath(path);
+        },
+            game.physics.arcade, false);
+        
+        houseZombies.forEach(function(self) {
+            gridBackup = grid.clone();
+            path = pathFinder.findPath(Math.floor(self.x / 32),Math.floor(self.y / 32), Math.floor(house.x / 32), Math.floor(house.y / 32), gridBackup);
+            self.setPath(path);
+        },
+            game.physics.arcade, false);
+        
+        
+        //DISPLAY HEALTH
+		healthBar = game.add.text(game.world.width - 150,10,'HEALTH: ' + player.health +'%', {font:'20px Cambria', fill: '#fa0a0a'});
+		healthBar.render = function(){
+		healthBar.text = 'HEALTH : '+ player.health +'%';    
+		};
+		healthBar.fixedToCamera = true;
+		healthBar.cameraOffset.setTo(2,5);
 
 		//House Health Text Bar
 		houseHealth = game.add.text(game.world.width - 150,10,'HOUSE: ' + house.health +'%', {font:'20px Cambria', fill: '#fa0a0a'});
@@ -186,7 +182,6 @@ demo.state1.prototype = {
 		house.enableBody = true;
 		house.body.immovable = true;
 		house.body.moves = false;
-
 		        	
     },
     
@@ -194,28 +189,84 @@ demo.state1.prototype = {
         
         //causes zombies to constantly move towards player
 		//IF STATEMENT TO MOVE CLOSER TO HOUSE OR PLAYER
-		
-		// get value of distance from player to zombie 
-		houseDistance = game.physics.arcade.distanceBetween(zombie, house, true)
-		
-		//get value of distance from house to zombie 
-		playerDistance = game.physics.arcade.distanceBetween(zombie, player, false)
-		
+        zombies.forEachAlive(function(self) {
+            if (self.path[0] != [] && self.path[0] != undefined) {
+                var currentX = Math.floor(self.x / 32)
+                var currentY = Math.floor(self.y / 32)
+                var currentXGoal = self.path[0][0];            
+                var currentYGoal = self.path[0][1];
+                var pathLength = self.path.length;
+                var finalGoalX = self.path[pathLength - 1][0];
+                var finalGoalY = self.path[pathLength - 1][1];
+                
+                if (Math.abs(Phaser.Math.distance(self.x, self.y, currentXGoal, currentYGoal)) > Math.abs(Phaser.Math.distance(self.x, self.y, player.x, player.y))) {
+                    
+                    self.path = [];
+                    game.physics.arcade.moveToObject(self, player);
+                    /*gridBackup = grid.clone();
+                    path = pathFinder.findPath(Math.floor(self.x / 32),Math.floor(self.y / 32), Math.floor(house.x / 32), Math.floor(house.y / 32), gridBackup);
+                    self.setPath(path); */
+                } 
+
+                if (currentX != currentXGoal && currentY != currentYGoal) {                
+                    game.physics.arcade.moveToXY(self, Math.floor(currentXGoal * 32), Math.floor(currentYGoal * 32), 50);
+                }
+                /*else if (Phaser.Math.distance(self.x, self.y, Math.floor(finalGoalX * 32), Math.floor(finalGoalY * 32)) >  game.physics.arcade.distanceBetween(self, player)) {
+                    gridBackup = grid.clone();
+                    path = pathFinder.findPath(Math.floor(self.x / 32),Math.floor(self.y / 32), Math.floor(player.x / 32), Math.floor(player.y / 32), gridBackup);
+                    self.setPath(path);
+                }*/
+                else {                
+                    self.path.shift();
+                }        
+            }
+            else if (Math.abs(Math.floor(self.body.velocity.x)) < 40 && Math.abs(Math.floor(self.body.velocity.y)) < 40) {
+                gridBackup = grid.clone();
+                path = pathFinder.findPath(Math.floor(self.x / 32),Math.floor(self.y / 32), Math.floor(player.x / 32), Math.floor(player.y / 32), gridBackup);
+                self.setPath(path);
+            }
+            
+            else {
+                game.physics.arcade.moveToObject(self, player, 50);
+            }
+        }, game.physics.arcade, false);
+        
+        houseZombies.forEach(function(self) {
+            if (self.path[0] != undefined) {
+                var currentX = Math.floor(self.x / 32)
+                var currentY = Math.floor(self.y / 32)
+                var currentXGoal = self.path[0][0];            
+                var currentYGoal = self.path[0][1];
+                
+                if (currentX != currentXGoal && currentY != currentYGoal) {                
+                    game.physics.arcade.moveToXY(self, Math.floor(currentXGoal * 32), Math.floor(currentYGoal * 32), 50);
+                } 
+                else {                
+                    self.path.shift();
+                }        
+            }
+            else if (Math.abs(self.body.velocity.x) < 1 && Math.abs(self.body.velocity.y) < 1) {
+                gridBackup = grid.clone();
+                path = pathFinder.findPath(Math.floor(self.x / 32),Math.floor(self.y / 32), Math.floor(house.x / 32), Math.floor(house.y / 32), gridBackup);
+                self.setPath(path);
+            }
+            else {
+                game.physics.arcade.moveToObject(self, house, 50)
+            }
+        }, game.physics.arcade, false);
+        
         //causes zombies to constantly move towards player
 
         game.physics.arcade.collide(zombies, zombies);
         game.physics.arcade.collide(houseZombies, houseZombies);
-        game.physics.arcade.collide(houseZombies, zombies);
-        game.physics.arcade.collide(houseZombies, collisions);
-        game.physics.arcade.collide(zombies, collisions);
+        //game.physics.arcade.collide(houseZombies, zombies);
+        //game.physics.arcade.collide(zombies, collisions);
         game.physics.arcade.collide(player, collisions);
-
-        
-        
+                
         //checks zombieAngle between zombies and player and adjusts animation accordingly
         //angle measured in radians and range normalized to [0,2pi]
 
-		zombies.forEach(game.physics.arcade.moveToObject, game.physics.arcade, false, player, 100);
+		//zombies.forEach(game.physics.arcade.moveToObject, game.physics.arcade, false, player, 100);
 			
 		zombies.forEach(function(self) {
             zombieAngle = (Phaser.Math.normalizeAngle(game.physics.arcade.angleBetween(self, player)))
@@ -235,7 +286,7 @@ demo.state1.prototype = {
            	 game.physics.arcade, false);
 
 
-        houseZombies.forEach(game.physics.arcade.moveToObject, game.physics.arcade, false, house, 200);
+        //houseZombies.forEach(game.physics.arcade.moveToObject, game.physics.arcade, false, house, 200);
         
         houseZombies.forEach(function(self) {
             var houseZombieAngle = (Phaser.Math.normalizeAngle(game.physics.arcade.angleBetween(self, house)))
@@ -332,8 +383,7 @@ demo.state1.prototype = {
         game.physics.arcade.overlap(houseZombies, bullets, this.hitGroup);
 		game.physics.arcade.overlap(player, zombies, this.collidePlayer);
 		game.physics.arcade.overlap(house, houseZombies, this.collideHouse);
-        game.physics.arcade.overlap(house, bullets, this.hitHouse);
-
+        game.physics.arcade.overlap(collisions[0], bullets, this.hitHouse);
     },  
 	
 	render: function(){
@@ -349,6 +399,8 @@ demo.state1.prototype = {
             nextFire = game.time.now + fireRate;
 
             bullet = bullets.getFirstDead();
+            game.physics.enable(bullet);
+            bullet.body.setSize(20, 20);
 
             bullet.reset(barrelX, barrelY);
 
@@ -371,13 +423,12 @@ demo.state1.prototype = {
 		player.health-= 10;
 
 	},
+    
 
-    collideHouse: function(house,zombie)
-	{
+    collideHouse: function(house,zombie) {
 		houseHealth.render();
 		house.health-=10;
-		
-	},
+    },
     
     hitHouse: function(house, bullet) {
       bullet.kill()
@@ -393,6 +444,18 @@ demo.state1.prototype = {
         blood.play('bloodSplatter', 15, false, true);
     },
     
+    listToMatrix: function(list, size) {
+        var matrix = [], i, k;
+
+            for (i = 0, k = -1; i < list.length; i++) {
+                if (i % size === 0) {
+                    k++;
+                    matrix[k] = [];
+                }
+            matrix[k].push(list[i]);
+        }
+        return matrix;
+    }
     /*
     findObjectsByType: function(type, map, layer) {
         var result = new Array();
