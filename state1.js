@@ -20,7 +20,11 @@ demo.state1.prototype = {
     },
 
     create: function() {
+        //creating the timer
+        timer = game.time.create(false);
+        //establishing physics
         game.physics.startSystem(Phaser.Physics.ARCADE);
+        //display settings for screen
         game.stage.backgroundColor = '#DDDDDD';
         game.world.setBounds(0, 0, 4000, 3200);
         game.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
@@ -167,6 +171,7 @@ demo.state1.prototype = {
 		healthBar.cameraOffset.setTo(2,5);
 		
         //DISPLAY HOUSE
+        
 		//CREATES TOP LAYER OF THE MAP, RENDERED ABOVE ALL ELSE
 		house = game.add.sprite(1938,1279,'house');
 		house.health = 10000;
@@ -179,25 +184,28 @@ demo.state1.prototype = {
 		};
 		houseHealth.fixedToCamera = true;
 		houseHealth.cameraOffset.setTo(2,30);
-		game.physics.enable(house);
-		
+        
+        //House Anchoring
+        game.physics.enable(house);
 		house.anchor.setTo(.5,1.0);
         house.body.setSize(480, 160, 0, 128);
 		house.enableBody = true;
 		house.body.immovable = true;
 		house.body.moves = false;
+        
+        //Point Bar
+        pointVal = game.add.text(game.world.width - 100, 50, 'POINTS: ' + timer.duration.toFixed(0), {font:'20px Cambria', fill: '#fa0a0a'});
+        pointVal.render = function(){
+		pointVal.text = 'POINTS: ' + timer.duration.toFixed(0);    
+		};
+        houseHealth.fixedToCamera = true;
+		houseHealth.cameraOffset.setTo(2,30);
 
 		        	
     },
- 
- 
-    
-    
     
     update: function() {
-        //IF STATEMENT FOR MOVING TO THE END SCREEN - "If point value hits 0"
-
-        
+        //IF STATEMENT FOR ENDING THE GAME - "If point value hits 0"
         
         
         //causes zombies to constantly move towards player
@@ -345,11 +353,11 @@ demo.state1.prototype = {
     },  
 	
 	render: function(){
+        //hitbox for debugging
         game.debug.body(zombie);
         game.debug.body(house);
 	},
 
-    
     fire: function(playerSpeed, barrelX, barrelY) {
 
         if (game.time.now > nextFire && bullets.countDead() > 0)
