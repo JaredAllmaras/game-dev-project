@@ -1,6 +1,9 @@
 //Start of gameplay
 var cursors, vel = 200, pathFinder, gameWidth, gameHeight, tileSize = 32, collisions, grass, player, zombie, zombieTwo, houseZombies, zombies, barrelX, barrelY ,bullet, bullets, fireRate = 100, nextFire = 200, house, healthBar, path, pathFinder, grid, gridBackup;
 
+/*var timer;
+var total = 0;*/
+
 demo.state1 = function(){};
 
 demo.state1.prototype = {    
@@ -20,7 +23,15 @@ demo.state1.prototype = {
     },
 
     create: function() {
+     /*   //creating the timer
+        timer = game.time.create(false);
+        //  Set a TimerEvent to occur after 2 seconds (?)
+        timer.loop(2000, updateCounter, this);
+        //start the timer
+        timer.start();*/
+        //establishing physics
         game.physics.startSystem(Phaser.Physics.ARCADE);
+        //display settings for screen
         game.stage.backgroundColor = '#DDDDDD';
         game.world.setBounds(0, 0, 4000, 3200);
         game.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
@@ -175,17 +186,28 @@ demo.state1.prototype = {
 		};
 		houseHealth.fixedToCamera = true;
 		houseHealth.cameraOffset.setTo(2,30);
-		game.physics.enable(house);
-		
+        
+        //House Anchoring
+        game.physics.enable(house);
 		house.anchor.setTo(.5,1.0);
         house.body.setSize(480, 160, 0, 128);
 		house.enableBody = true;
 		house.body.immovable = true;
 		house.body.moves = false;
-		        	
+        
+        /*//Point Bar
+        pointVal = game.add.text(game.world.width + 100, 200, 'POINTS: ' + timer.duration.toFixed(0), {font:'20px Cambria', fill: '#fa0a0a'});
+        pointVal.render = function(){
+		pointVal.text = 'POINTS: ' + timer.duration.toFixed(0);    
+		};
+        pointVal.fixedToCamera = true;
+		pointVal.cameraOffset.setTo(1000,10);*/
+    		        	
     },
     
     update: function() {
+        //IF STATEMENT FOR ENDING THE GAME - "If point value hits 0"
+        
         
         //causes zombies to constantly move towards player
 		//IF STATEMENT TO MOVE CLOSER TO HOUSE OR PLAYER
@@ -387,11 +409,13 @@ demo.state1.prototype = {
     },  
 	
 	render: function(){
+        //hitbox for debugging
         game.debug.body(zombie);
         game.debug.body(house);
+        
+        //game.debug.text('Time until event: ' + timer.duration.toFixed(0), 32, 32);
 	},
 
-    
     fire: function(playerSpeed, barrelX, barrelY) {
 
         if (game.time.now > nextFire && bullets.countDead() > 0)
