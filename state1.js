@@ -191,6 +191,12 @@ demo.state1.prototype = {
     },
     
     update: function() {
+        //IF STATEMENT FOR MOVING TO THE END SCREEN
+        if(game.input.activePointer.isDown){
+            game.state.start('state2');
+        }
+        
+        
         
         //causes zombies to constantly move towards player
 		//IF STATEMENT TO MOVE CLOSER TO HOUSE OR PLAYER
