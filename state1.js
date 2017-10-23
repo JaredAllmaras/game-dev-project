@@ -1,6 +1,9 @@
 //Start of gameplay
 var cursors, vel = 200, pathFinder, gameWidth, gameHeight, tileSize = 32, collisions, grass, player,zombie, zombieTwo,houseZombies, zombies, barrelX, barrelY ,bullet, bullets, fireRate = 100, nextFire = 200,  healthBar, pathingGrid;
 
+/*var timer;
+var total = 0;*/
+
 demo.state1 = function(){};
 
 demo.state1.prototype = {    
@@ -20,8 +23,12 @@ demo.state1.prototype = {
     },
 
     create: function() {
-        //creating the timer
+     /*   //creating the timer
         timer = game.time.create(false);
+        //  Set a TimerEvent to occur after 2 seconds (?)
+        timer.loop(2000, updateCounter, this);
+        //start the timer
+        timer.start();*/
         //establishing physics
         game.physics.startSystem(Phaser.Physics.ARCADE);
         //display settings for screen
@@ -193,13 +200,14 @@ demo.state1.prototype = {
 		house.body.immovable = true;
 		house.body.moves = false;
         
-        //Point Bar
-        pointVal = game.add.text(game.world.width - 100, 50, 'POINTS: ' + timer.duration.toFixed(0), {font:'20px Cambria', fill: '#fa0a0a'});
+        /*//Point Bar
+        pointVal = game.add.text(game.world.width + 100, 200, 'POINTS: ' + timer.duration.toFixed(0), {font:'20px Cambria', fill: '#fa0a0a'});
         pointVal.render = function(){
 		pointVal.text = 'POINTS: ' + timer.duration.toFixed(0);    
 		};
-        houseHealth.fixedToCamera = true;
-		houseHealth.cameraOffset.setTo(2,30);
+        pointVal.fixedToCamera = true;
+		pointVal.cameraOffset.setTo(1000,10);*/
+    
 
 		        	
     },
@@ -356,6 +364,8 @@ demo.state1.prototype = {
         //hitbox for debugging
         game.debug.body(zombie);
         game.debug.body(house);
+        
+        //game.debug.text('Time until event: ' + timer.duration.toFixed(0), 32, 32);
 	},
 
     fire: function(playerSpeed, barrelX, barrelY) {
