@@ -5,4 +5,4 @@ game.state.add('state1', demo.state1);
 game.state.add('state2', demo.state2);
 
 //sending user to initial state
-game.state.start('state0');
+game.state.start('state1');
