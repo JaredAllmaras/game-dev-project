@@ -107,7 +107,7 @@ demo.state1.prototype = {
         player.animations.add('down', [28, 29, 30, 31], 9, true);
         player.health = 100;
 		player.maxHealth = 100;
-        player.damage = 1;
+        player.damage = 10;
         
         player.events.onKilled.add(function(){
 			//PUT ANIMATION HERE FOR HUNTER DYING
@@ -128,11 +128,11 @@ demo.state1.prototype = {
 		houseZombies.damageAmount = 0.01;	
 
 		//create range of int for zombies to be created
-		 Phaser.RandomDataGenerator.intergetInRange(2000,)
+		 //Phaser.RandomDataGenerator.intergetInRange(2000,)
 		
         
         //create zombies 
-        for ( var i = 0; i<5; i++)
+        for ( var i = 0; i<25; i++)
         {
  
             var randomX = game.world.randomX;
@@ -209,7 +209,7 @@ demo.state1.prototype = {
 		
 		zombies.forEach(function(self) {
 		gridBackup = grid.clone();
-		console.log(gridBackup);
+		//console.log(gridBackup);
 		path = pathFinder.findPath(Math.floor(self.x / 32),Math.floor(self.y / 32), Math.floor(house.x / 32), Math.floor(house.y / 32), gridBackup);
 		self.setPath(path);
 		},
@@ -331,8 +331,8 @@ demo.state1.prototype = {
 		
         game.physics.arcade.collide(zombies, zombies);
         game.physics.arcade.collide(houseZombies, houseZombies);
-        //game.physics.arcade.collide(houseZombies, zombies);
-        //game.physics.arcade.collide(zombies, collisions);
+        game.physics.arcade.collide(houseZombies, zombies);
+        game.physics.arcade.collide(zombies, collisions);
         game.physics.arcade.collide(player, collisions);   
 		//game.physics.arcade.collide(healthBoosts, player);
 		//game.physics.arcade.collide(player,healthBoosts);
@@ -465,7 +465,7 @@ demo.state1.prototype = {
 		game.physics.arcade.overlap(house, houseZombies, this.collideHouse);
         game.physics.arcade.overlap(collisions[0], bullets, this.hitHouse);
         game.physics.arcade.overlap(house, bullets, this.hitHouse);
-		game.physics.arcade.overlap( healthBoosts, bullets, this.collideHealth);
+		game.physics.arcade.overlap(  player, healthBar, this.collideHealth);
 
     },  
 	
@@ -508,7 +508,7 @@ demo.state1.prototype = {
     collideHouse: function(house,zombie) {
 		
 		houseHealth.render();
-		house.health -=0.01;
+		house.health -=0.001;
 		
 	},
     
@@ -526,9 +526,9 @@ demo.state1.prototype = {
         blood.play('bloodSplatter', 15, false, true);
     },
 	
-	collideHealth: function( healthBoosts, bullets)
+	collideHealth: function( healthBoosts, player)
 	{
-		healthBoosts.damage(1);
+		//healthBoosts.kill();
 		
 		if ((player.health) < (player.maxHealth)){
 			var playerHealth = player.health 
