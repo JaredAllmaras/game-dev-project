@@ -18,6 +18,7 @@ demo.state1.prototype = {
 		game.load.image('bullet', 'assets/sprites/bullet.png');
         game.load.image('collision', 'assets/Tilemaps/collision.png');
 		game.load.image('health-boost', 'assets/sprites/health-icon.png');
+        game.load.image('crate', 'assets/Tilemaps/crate.png');
         game.load.spritesheet('hunter', 'assets/sprites/hunterSprites.png', 58, 69);
         game.load.spritesheet('zombie','assets/sprites/zombieSprites.png', 52, 67);
         game.load.spritesheet('bloodSplatter', 'assets/sprites/bloodSpritesheet.png', 170, 120);
@@ -63,6 +64,7 @@ demo.state1.prototype = {
         map.addTilesetImage('fenceUp', 'fenceUp');
         map.addTilesetImage('fence', 'fence');
         map.addTilesetImage('house', 'house');
+        map.addTilesetImage('crate', 'crate');
         collisions = map.createLayer('collisions');
         grass = map.createLayer('grass');
         dirt = map.createLayer('dirt');
@@ -109,10 +111,6 @@ demo.state1.prototype = {
 		player.maxHealth = 100;
         player.damage = 10;
         
-        player.events.onKilled.add(function(){
-			//PUT ANIMATION HERE FOR HUNTER DYING
-            player.kill();
-		});
 	
 
         /////////////////////////////////////////////////
@@ -132,7 +130,11 @@ demo.state1.prototype = {
 		
         
         //create zombies 
+<<<<<<< HEAD
         for ( var i = 0; i<25; i++)
+=======
+        for ( var i = 0; i<50; i++)
+>>>>>>> origin/master
         {
  
             var randomX = game.world.randomX;
@@ -155,13 +157,7 @@ demo.state1.prototype = {
             houseZombies.add(zombieTwo);
             
             
-        }
-
-        
-        
-
-		
-		
+        }				
         ////////////////////////////////
 		//HEALTH BOOST
 		///////////////////////////////
@@ -220,7 +216,7 @@ demo.state1.prototype = {
 		path = pathFinder.findPath(Math.floor(self.x / 32),Math.floor(self.y / 32), Math.floor(house.x / 32), Math.floor(house.y / 32), gridBackup);
 		self.setPath(path);
 		},
-		game.physics.arcade, false);
+		game.physics.arcade, false); 
 
 
         
@@ -245,6 +241,11 @@ demo.state1.prototype = {
 		};
 		healthBar.fixedToCamera = true;
 		healthBar.cameraOffset.setTo(2,5);
+        
+        spaceBar = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
+        marker = game.add.graphics();
+        marker.lineStyle(2, 0xffffff, 1);
+        marker.drawRect(0, 0, 32, 32);
 		
 		        	
     },
@@ -252,6 +253,16 @@ demo.state1.prototype = {
     update: function() {
         //IF STATEMENT FOR ENDING THE GAME - "If point value hits 0"
         
+        if(spaceBar.isDown) {
+            marker.x = layer.getTileX(game.input.activePointer.worldX)
+            
+        }
+            
+        
+        if (player.health <= 0 || house.health <= 0) {
+            player.kill();
+            game.state.start('state2');
+        }
         
         //causes zombies to constantly move towards player
 		//IF STATEMENT TO MOVE CLOSER TO HOUSE OR PLAYER
@@ -331,7 +342,11 @@ demo.state1.prototype = {
 		
         game.physics.arcade.collide(zombies, zombies);
         game.physics.arcade.collide(houseZombies, houseZombies);
+<<<<<<< HEAD
         game.physics.arcade.collide(houseZombies, zombies);
+=======
+        //game.physics.arcade.collide(houseZombies, zombies);
+>>>>>>> origin/master
         game.physics.arcade.collide(zombies, collisions);
         game.physics.arcade.collide(player, collisions);   
 		//game.physics.arcade.collide(healthBoosts, player);
@@ -342,7 +357,7 @@ demo.state1.prototype = {
         //checks zombieAngle between zombies and player and adjusts animation accordingly
         //angle measured in radians and range normalized to [0,2pi]
 
-		zombies.forEach(game.physics.arcade.moveToObject, game.physics.arcade, false, player, 50);
+		//zombies.forEach(game.physics.arcade.moveToObject, game.physics.arcade, false, player, 50);
 			
 		zombies.forEach(function(self) {
             zombieAngle = (Phaser.Math.normalizeAngle(game.physics.arcade.angleBetween(self, player)))
@@ -361,12 +376,10 @@ demo.state1.prototype = {
             }},
            	 game.physics.arcade, false);
 
-
-        //houseZombies.forEach(game.physics.arcade.moveToObject, game.physics.arcade, false, house, 200);
   
 
-			houseZombies.forEach(game.physics.arcade.moveToObject, game.physics.arcade, false, house, 50);
-			houseZombies.forEach(function(self) {
+        //houseZombies.forEach(game.physics.arcade.moveToObject, game.physics.arcade, false, house, 50);
+        houseZombies.forEach(function(self) {
             var houseZombieAngle = (Phaser.Math.normalizeAngle(game.physics.arcade.angleBetween(self, house)))
             
             if(houseZombieAngle >= 0 && houseZombieAngle <= 1.5708) {
@@ -460,8 +473,7 @@ demo.state1.prototype = {
         game.physics.arcade.overlap(zombies, bullets, this.hitGroup);
         game.physics.arcade.overlap(houseZombies, bullets, this.hitGroup);
 		game.physics.arcade.overlap(player, zombies, this.collidePlayer);
-		game.physics.arcade.overlap(player, houseZombies, this.collidePlayer);
-
+        game.physics.arcade.overlap(player, houseZombies, this.collidePlayer);
 		game.physics.arcade.overlap(house, houseZombies, this.collideHouse);
         game.physics.arcade.overlap(collisions[0], bullets, this.hitHouse);
         game.physics.arcade.overlap(house, bullets, this.hitHouse);
@@ -557,7 +569,30 @@ demo.state1.prototype = {
             matrix[k].push(list[i]);
         }
         return matrix;
+    },
+    
+    placeCrate: function(tileX, tileY) {
+        map.putTile(158, tileX, tileY);
+        
+        grid.setWalkableAt(tileX, tileY, false);
+        
+        zombies.forEach(function(self) {
+		gridBackup = grid.clone();
+		console.log(gridBackup);
+		path = pathFinder.findPath(Math.floor(self.x / 32),Math.floor(self.y / 32), Math.floor(house.x / 32), Math.floor(house.y / 32), gridBackup);
+		self.setPath(path);
+		},
+		game.physics.arcade, false);
+
+		houseZombies.forEach(function(self) {
+		gridBackup = grid.clone();
+		path = pathFinder.findPath(Math.floor(self.x / 32),Math.floor(self.y / 32), Math.floor(house.x / 32), Math.floor(house.y / 32), gridBackup);
+		self.setPath(path);
+		},
+		game.physics.arcade, false);      
     }
+    
+    
     /*
     findObjectsByType: function(type, map, layer) {
         var result = new Array();
