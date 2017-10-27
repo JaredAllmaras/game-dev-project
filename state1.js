@@ -340,11 +340,8 @@ demo.state1.prototype = {
 		
         game.physics.arcade.collide(zombies, zombies);
         game.physics.arcade.collide(houseZombies, houseZombies);
-<<<<<<< HEAD
         game.physics.arcade.collide(houseZombies, zombies);
-=======
-        //game.physics.arcade.collide(houseZombies, zombies);
->>>>>>> origin/master
+
         game.physics.arcade.collide(zombies, collisions);
         game.physics.arcade.collide(player, collisions);   
 		//game.physics.arcade.collide(healthBoosts, player);
