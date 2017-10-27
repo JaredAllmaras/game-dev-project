@@ -137,7 +137,7 @@ demo.state1.prototype = {
             //path = pathFinder.findPath(zombie.x, zombie.y, player.x, player.y, gridBackup);
             //zombie.setPath(path);
             zombies.add(zombie);
-
+            /*
             randomX = game.world.randomX;
             randomY = game.world.randomY;
 
@@ -148,7 +148,7 @@ demo.state1.prototype = {
             //path = pathFinder.findPath(zombieTwo.x, zombieTwo.y, house.x, house.y, gridBackup);
             //zombieTwo.setPath(path);
             houseZombies.add(zombieTwo);
-            
+            */
             
         }				
         ////////////////////////////////
@@ -157,7 +157,7 @@ demo.state1.prototype = {
 		healthBoosts = game.add.group();
 		healthBoosts.enableBody = true;
 		//create health boost in random places 
-		for (var i =0; i<100; i++){
+		for (var i =0; i<10; i++){
 			healthBoost = healthBoosts.create(game.world.randomX, game.world.randomY, 'health-boost');
 			
 			healthBoost.anchor.setTo(0.5,0.5);
@@ -466,10 +466,10 @@ demo.state1.prototype = {
 	
 	render: function(){
         //hitbox for debugging
-        game.debug.body(zombie);
-        game.debug.body(house);        
+        //game.debug.body(zombie);
+        //game.debug.body(house);        
         //game.debug.text('Time until event: ' + timer.duration.toFixed(0), 32, 32);
-		game.debug.body(healthBoosts);
+		//game.debug.body(healthBoosts);
 	},
 
     fire: function(playerSpeed, barrelX, barrelY) {
