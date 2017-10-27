@@ -5,12 +5,12 @@ var counter = 0;
 demo.state0 = function(){};
 demo.state0.prototype = {
     preload: function(){
-         game.load.image('zombies', 'assets/sprites/zombieSprites.png');
+         game.load.image('logo', 'assets/death_and_decimation_logo2.png');
     },
     create: function(){
         //  This creates a simple sprite that is using our loaded image and
         //  displays it on-screen and assign it to a variable
-        var image = game.add.sprite(game.world.centerX, game.world.centerY, 'zombies');
+        var image = game.add.sprite(game.world.centerX, game.world.centerY, 'logo');
 
         //  Moves the image anchor to the middle, so it centers inside the game properly
         image.anchor.set(0.5);
