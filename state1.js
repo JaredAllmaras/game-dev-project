@@ -130,11 +130,9 @@ demo.state1.prototype = {
 		
         
         //create zombies 
-<<<<<<< HEAD
+
         for ( var i = 0; i<25; i++)
-=======
-        for ( var i = 0; i<50; i++)
->>>>>>> origin/master
+
         {
  
             var randomX = game.world.randomX;
