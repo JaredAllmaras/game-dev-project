@@ -109,7 +109,7 @@ demo.state1.prototype = {
         player.animations.add('down', [28, 29, 30, 31], 9, true);
         player.health = 100;
 		player.maxHealth = 100;
-        player.damage = 1;
+        player.damage = 10;
         
 	
 
@@ -125,9 +125,14 @@ demo.state1.prototype = {
         houseZombies.enableBody = true;       
 		houseZombies.damageAmount = 0.01;	
 
+		//create range of int for zombies to be created
+		 //Phaser.RandomDataGenerator.intergetInRange(2000,)
+		
         
         //create zombies 
-        for ( var i = 0; i<50; i++)
+
+        for ( var i = 0; i<25; i++)
+
         {
  
             var randomX = game.world.randomX;
@@ -157,6 +162,7 @@ demo.state1.prototype = {
 		healthBoosts = game.add.group();
 		healthBoosts.enableBody = true;
 		//create health boost in random places 
+
 		for (var i =0; i<10; i++){
 			healthBoost = healthBoosts.create(game.world.randomX, game.world.randomY, 'health-boost');
 			
@@ -175,13 +181,15 @@ demo.state1.prototype = {
 		house.health = 100;
 
 		//House Health Text Bar
-		houseHealth = game.add.text(game.world.width - 150,10,'HOUSE: ' + Math.round(house.health) +'%', {font:'20px Cambria', fill: '#fa0a0a'});
+		houseHealth = game.add.text(game.world.width - 150,10,'HOUSE: ' + Math.round(house.health) +'%', {font:'20px Cambria', fill: '#eeb8a4'});
+		houseHealth.style.backgroundColor = '#b20000'
+		houseHealth.style.fontWeight = 'bold'
 		houseHealth.render = function(){
 		houseHealth.text = 'HOUSE : '+ Math.round(house.health) +'%';    
 		};
 		
 		houseHealth.fixedToCamera = true;
-		houseHealth.cameraOffset.setTo(2,30);
+		houseHealth.cameraOffset.setTo(2,35);
         
         //House Anchoring
         game.physics.enable(house);		
@@ -196,7 +204,7 @@ demo.state1.prototype = {
 		
 		zombies.forEach(function(self) {
 		gridBackup = grid.clone();
-		console.log(gridBackup);
+		//console.log(gridBackup);
 		path = pathFinder.findPath(Math.floor(self.x / 32),Math.floor(self.y / 32), Math.floor(house.x / 32), Math.floor(house.y / 32), gridBackup);
 		self.setPath(path);
 		},
@@ -222,9 +230,13 @@ demo.state1.prototype = {
 		
 				
 		//DISPLAY HEALTH
-		healthBar = game.add.text(game.world.width - 150,10,'HEALTH: ' + Math.round(player.health) +'%', {font:'20px Cambria', fill: '#fa0a0a'});
+		healthBar = game.add.text(game.world.width - 150,10,'HEALTH: ' + Math.round(player.health) +'%', {font:'20px Cambria', fill: '#ab2001'});
+		healthBar.style.backgroundColor = '#ea9a89';
+		healthBar.style.fontWeight ='bold';
+
 		healthBar.render = function(){
-		healthBar.text = 'HEALTH : '+ Math.round(player.health) +'%';    
+
+		healthBar.text = 'HEALTH : '+ Math.round(player.health) +'%';  
 		};
 		healthBar.fixedToCamera = true;
 		healthBar.cameraOffset.setTo(2,5);
@@ -329,7 +341,8 @@ demo.state1.prototype = {
 		
         game.physics.arcade.collide(zombies, zombies);
         game.physics.arcade.collide(houseZombies, houseZombies);
-        //game.physics.arcade.collide(houseZombies, zombies);
+        game.physics.arcade.collide(houseZombies, zombies);
+
         game.physics.arcade.collide(zombies, collisions);
         game.physics.arcade.collide(player, collisions);   
 		//game.physics.arcade.collide(healthBoosts, player);
@@ -460,7 +473,7 @@ demo.state1.prototype = {
 		game.physics.arcade.overlap(house, houseZombies, this.collideHouse);
         game.physics.arcade.overlap(collisions[0], bullets, this.hitHouse);
         game.physics.arcade.overlap(house, bullets, this.hitHouse);
-		game.physics.arcade.overlap( healthBoosts, bullets, this.collideHealth);
+		game.physics.arcade.overlap(  player, healthBar, this.collideHealth);
 
     },  
 	
@@ -503,7 +516,7 @@ demo.state1.prototype = {
     collideHouse: function(house,zombie) {
 		
 		houseHealth.render();
-		house.health -=0.01;
+		house.health -=0.001;
 		
 	},
     
@@ -521,9 +534,9 @@ demo.state1.prototype = {
         blood.play('bloodSplatter', 15, false, true);
     },
 	
-	collideHealth: function( healthBoosts, bullets)
+	collideHealth: function( healthBoosts, player)
 	{
-		healthBoosts.damage(1);
+		//healthBoosts.kill();
 		
 		if ((player.health) < (player.maxHealth)){
 			var playerHealth = player.health 
