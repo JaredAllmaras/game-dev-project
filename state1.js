@@ -1,12 +1,9 @@
 //Start of gameplay
-<<<<<<< HEAD
 var cursors, vel = 200, pathFinder, gameWidth, gameHeight, tileSize = 32, collisions, grass, player, zombie, zombieTwo, houseZombies, zombies, barrelX, barrelY ,bullet, bullets, fireRate = 100, nextFire = 200, house, healthBar, path, pathFinder, grid, gridBackup,healthBoosts,healthBoost, music, uiBar, statusBar, gameBar, zombieCount;
-=======
-var cursors, vel = 200, pathFinder, gameWidth, gameHeight, tileSize = 32, collisions, grass, player, zombie, zombieTwo, houseZombies, zombies, barrelX, barrelY ,bullet, bullets, fireRate = 100, nextFire = 200, house, healthBar, path, pathFinder, grid, gridBackup,healthBoosts, map, togglePlaceCrate;
 
 //player movement controls
 var spaceBar, w, a, s, d;
->>>>>>> origin/master
+
 
 /*var timer;
 var total = 0;*/
@@ -145,13 +142,8 @@ demo.state1.prototype = {
 		
         
         //create zombies 
-<<<<<<< HEAD
-        for ( var i = 0; i<25; i++)
-
-=======
 
         for ( var i = 0; i<50; i++)
->>>>>>> origin/master
         {
  
             var randomX = game.world.randomX;
@@ -172,8 +164,6 @@ demo.state1.prototype = {
             //path = pathFinder.findPath(zombieTwo.x, zombieTwo.y, house.x, house.y, gridBackup);
             //zombieTwo.setPath(path);
             houseZombies.add(zombieTwo);
-<<<<<<< HEAD
-            */
             zombieCount +=1
         }	
         //ZOMBIE COUNT
@@ -185,12 +175,7 @@ demo.state1.prototype = {
 		zombieCount.text = 'HOUSE : '+ Math.round(house.health) +'%';    
 		};
         */
-        
-=======
-            
-            
-        }				
->>>>>>> origin/master
+
         ////////////////////////////////
 		//HEALTH BOOST
 		///////////////////////////////
@@ -341,17 +326,13 @@ demo.state1.prototype = {
     },
     
     update: function() {
-<<<<<<< HEAD
-        //IF STATEMENT FOR ENDING THE GAME - "If point value hits 0"
 
+        //IF STATEMENT FOR ENDING THE GAME - "If point value hits 0"
         if(spaceBar.isDown) {
             marker.x = layer.getTileX(game.input.activePointer.worldX)
             
         }
-            
-=======
->>>>>>> origin/master
-        
+
         //IF STATEMENT FOR ENDING THE GAME - "If point value hits 0"   
         if (player.health <= 0 || house.health <= 0) {
             player.kill();
@@ -581,7 +562,6 @@ demo.state1.prototype = {
         game.physics.arcade.overlap(player, houseZombies, this.collidePlayer);
 		game.physics.arcade.overlap(house, houseZombies, this.collideHouse);
         game.physics.arcade.overlap(house, bullets, this.hitHouse);
-<<<<<<< HEAD
         
         
 		if(game.physics.arcade.collide(player,healthBoosts, this.collideHealth,this.processHandler,this ))
@@ -590,9 +570,7 @@ demo.state1.prototype = {
             }
         console.log(zombieCount);
 
-=======
 		game.physics.arcade.overlap(bullets, healthBar, this.collideHealth);
->>>>>>> origin/master
 
     },  
 	
@@ -656,27 +634,18 @@ demo.state1.prototype = {
     
 	collideHealth: function( sprite, healthBoosters)
 	{
-<<<<<<< HEAD
 		if ((sprite.health) < (sprite.maxHealth)){
 			var playerHealth = sprite.health 
-=======
-		healthBoosts.kill();
-		
-		if ((player.health) < (player.maxHealth)){
-			var playerHealth = player.health 
->>>>>>> origin/master
-			if ((100-playerHealth)<10){
+            healthBoosts.kill();
+			
+            if ((100-playerHealth)<10){
 				sprite.health = sprite.maxHealth
                 healthBoosters.kill();
-
-				
 			}
 			else{
 				sprite.health +=10
                 healthBoosters.kill();
-
 			}
-			
 		}
 		healthBar.render();
 
@@ -719,15 +688,9 @@ demo.state1.prototype = {
 		path = pathFinder.findPath(Math.floor(self.x / 32),Math.floor(self.y / 32), Math.floor(house.x / 32), Math.floor(house.y / 32), gridBackup);
 		self.setPath(path);
 		},
-<<<<<<< HEAD
 		game.physics.arcade, false);      
-    },
-=======
-		game.physics.arcade, false);
         */
-    }
-    
->>>>>>> origin/master
+    },
     
     start: function(music){
         music.play();
@@ -735,7 +698,7 @@ demo.state1.prototype = {
             music.play();
         }
         
-    },
+    }
     /*
     hasLooped: function(sound){
         
