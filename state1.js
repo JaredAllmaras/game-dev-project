@@ -1,5 +1,5 @@
 //Start of gameplay
-var cursors, vel = 200, pathFinder, gameWidth, gameHeight, tileSize = 32, collisions, grass, player, zombie, zombieTwo, houseZombies, zombies, barrelX, barrelY ,bullet, bullets, fireRate = 100, nextFire = 200, house, healthBar, path, pathFinder, grid, gridBackup,healthBoosts,healthBoost, music, uiBar, statusBar, gameBar;
+var cursors, vel = 200, pathFinder, gameWidth, gameHeight, tileSize = 32, collisions, grass, player, zombie, zombieTwo, houseZombies, zombies, barrelX, barrelY ,bullet, bullets, fireRate = 100, nextFire = 200, house, healthBar, path, pathFinder, grid, gridBackup,healthBoosts,healthBoost, music, uiBar, statusBar, gameBar, zombieCount;
 
 /*var timer;
 var total = 0;*/
@@ -138,7 +138,6 @@ demo.state1.prototype = {
 		
         
         //create zombies 
-
         for ( var i = 0; i<25; i++)
 
         {
@@ -162,8 +161,18 @@ demo.state1.prototype = {
             //zombieTwo.setPath(path);
             houseZombies.add(zombieTwo);
             */
-            
+            zombieCount +=1
         }	
+        //ZOMBIE COUNT
+        /*
+		zombieCount = game.add.text(game.world.width - 150,10,'ZOMBIES: ' + zombie.count +'%', {font:'20px Cambria', fill: '#3add71'});
+		zombieCount.style.backgroundColor = '#b20000'
+		zombieCount.style.fontWeight = 'bold'
+		zombieCount.render = function(){
+		zombieCount.text = 'HOUSE : '+ Math.round(house.health) +'%';    
+		};
+        */
+        
         ////////////////////////////////
 		//HEALTH BOOST
 		///////////////////////////////
@@ -183,6 +192,8 @@ demo.state1.prototype = {
 			
 			
 		}
+        healthBoost.body.immovable = true;
+		healthBoost.body.moves = false;
            
         
         
@@ -543,6 +554,8 @@ demo.state1.prototype = {
             {
                 console.log('hit');
             }
+        console.log(zombieCount);
+
 
     },  
 	
@@ -602,20 +615,24 @@ demo.state1.prototype = {
         blood.anchor.setTo(0.5, 0.5);
         blood.animations.add('bloodSplatter');
         blood.play('bloodSplatter', 15, false, true);
+        zombieCount-=1
     },
 	
     
 	collideHealth: function( sprite, healthBoosters)
 	{
-        healthBoosters.kill();
 		if ((sprite.health) < (sprite.maxHealth)){
 			var playerHealth = sprite.health 
 			if ((100-playerHealth)<10){
 				sprite.health = sprite.maxHealth
+                healthBoosters.kill();
+
 				
 			}
 			else{
 				sprite.health +=10
+                healthBoosters.kill();
+
 			}
 			
 		}
