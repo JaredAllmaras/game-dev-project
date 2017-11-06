@@ -100,7 +100,7 @@ demo.state1.prototype = {
 		/////////////////////////////////////////////////////
         //enables physics to player and sets player settings
         player = game.add.sprite(1938,1279, 'hunter');
-        game.physics.enable(player);
+        game.physics.arcade.enable(player);
         player.body.collideWorldBounds = true;
         player.scale.setTo(0.7, 0.7);
         player.anchor.setTo(0.5, 0.5);
@@ -164,11 +164,13 @@ demo.state1.prototype = {
             */
             
         }	
-        
-        healthBoosts = game.add.sprite(1500, 1780,'health-boost');
-        healthBoosts = game.add.group();
+        ////////////////////////////////
+		//HEALTH BOOST
+		///////////////////////////////
+        //healthBoosts = game.add.sprite(1500, 1780,'health-boost');
+        healthBoosts = game.add.physicsGroup();
 
-		healthBoosts.enableBody = true;
+		//healthBoosts.enableBody = true;
 		//create health boost in random places 
 
 		for (var i =0; i<10; i++){
@@ -181,7 +183,9 @@ demo.state1.prototype = {
 			
 			
 		}
-                 
+           
+        
+        
         //////////////
         //UI BAR
         //////////////
@@ -191,9 +195,9 @@ demo.state1.prototype = {
         uiBar.cameraOffset.setTo(-650,660);
         console.log(uiBar.inWorld);
         
-        ////////////////////////////////
-		//HEALTH BOOST
-		///////////////////////////////
+        
+        
+        
 
 		////////////////////////////////////
         //DISPLAY HOUSE
@@ -264,19 +268,6 @@ demo.state1.prototype = {
         
         
         
-   
-        /*
-        uiBar = game.add.text(game.world.width, 10, " UI BAR", {fill: '#ffffff'});
-        
-        uiBar.render = function(){
-		uiBar.text = 'UI BAR';
-        };
-        uiBar.fixedToCamera = true;
-        uiBar.cameraOffset.setTo(300,750);
-        uiBar.style.backgroundColor = '#ffffff';
-        uiBar.style.fill = '#ffffff';
-        */
-
         gameBar = new Phaser.Graphics(game,190,game.world.centerY);
         gameBar.beginFill('#ffffff');
         gameBar.drawRoundedRect(game.world.centerX,game.world.centerY,game.world.width,50,1);
@@ -535,7 +526,7 @@ demo.state1.prototype = {
         }
         //console.log(music.isPlaying);
         //console.log(music.currentTime);
-        console.log(gameBar.inCamera);
+        //console.log(gameBar.inCamera);
         //console.log(gameBar.inWorld);
 
 
@@ -546,7 +537,12 @@ demo.state1.prototype = {
 		game.physics.arcade.overlap(house, houseZombies, this.collideHouse);
         game.physics.arcade.overlap(collisions[0], bullets, this.hitHouse);
         game.physics.arcade.overlap(house, bullets, this.hitHouse);
-		game.physics.arcade.overlap(  player, healthBar, this.collideHealth);
+        
+        
+		if(game.physics.arcade.collide(player,healthBoosts, this.collideHealth,this.processHandler,this ))
+            {
+                console.log('hit');
+            }
 
     },  
 	
@@ -556,7 +552,7 @@ demo.state1.prototype = {
         //game.debug.body(house);        
         //game.debug.text('Time until event: ' + timer.duration.toFixed(0), 32, 32);
 		//game.debug.body(healthBoosts);
-        game.debug.soundInfo(music,20,32);
+        //game.debug.soundInfo(music,20,32);
 	},
 
     fire: function(playerSpeed, barrelX, barrelY) {
@@ -608,18 +604,18 @@ demo.state1.prototype = {
         blood.play('bloodSplatter', 15, false, true);
     },
 	
-	collideHealth: function( healthBoosts, player)
+    
+	collideHealth: function( sprite, healthBoosters)
 	{
-		//healthBoosts.kill();
-		
-		if ((player.health) < (player.maxHealth)){
-			var playerHealth = player.health 
+        healthBoosters.kill();
+		if ((sprite.health) < (sprite.maxHealth)){
+			var playerHealth = sprite.health 
 			if ((100-playerHealth)<10){
-				player.health = player.maxHealth
+				sprite.health = sprite.maxHealth
 				
 			}
 			else{
-				player.health +=10
+				sprite.health +=10
 			}
 			
 		}
@@ -627,6 +623,10 @@ demo.state1.prototype = {
 
 		
 	},
+    processHandler(sprite, healthBoosters)
+    {
+      return true;  
+    },
     
     listToMatrix: function(list, size) {
         var matrix = [], i, k;
