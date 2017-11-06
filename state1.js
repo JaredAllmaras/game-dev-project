@@ -1,5 +1,8 @@
 //Start of gameplay
-var cursors, vel = 200, pathFinder, gameWidth, gameHeight, tileSize = 32, collisions, grass, player, zombie, zombieTwo, houseZombies, zombies, barrelX, barrelY ,bullet, bullets, fireRate = 100, nextFire = 200, house, healthBar, path, pathFinder, grid, gridBackup,healthBoosts,healthBoost;;
+var cursors, vel = 200, pathFinder, gameWidth, gameHeight, tileSize = 32, collisions, grass, player, zombie, zombieTwo, houseZombies, zombies, barrelX, barrelY ,bullet, bullets, fireRate = 100, nextFire = 200, house, healthBar, path, pathFinder, grid, gridBackup,healthBoosts, map, togglePlaceCrate;
+
+//player movement controls
+var spaceBar, w, a, s, d;
 
 /*var timer;
 var total = 0;*/
@@ -57,7 +60,7 @@ demo.state1.prototype = {
         pathFinder = new PF.AStarFinder();
         
         //LOADING MAP ASSETS AND MAP LAYERS
-        var map = game.add.tilemap('field');
+        map = game.add.tilemap('field');
         map.addTilesetImage('collision', 'collision');
         map.addTilesetImage('grass', 'grass');
         map.addTilesetImage('dirt', 'dirt');
@@ -131,8 +134,7 @@ demo.state1.prototype = {
         
         //create zombies 
 
-        for ( var i = 0; i<25; i++)
-
+        for ( var i = 0; i<50; i++)
         {
  
             var randomX = game.world.randomX;
@@ -142,7 +144,7 @@ demo.state1.prototype = {
             //path = pathFinder.findPath(zombie.x, zombie.y, player.x, player.y, gridBackup);
             //zombie.setPath(path);
             zombies.add(zombie);
-            /*
+            
             randomX = game.world.randomX;
             randomY = game.world.randomY;
 
@@ -153,7 +155,7 @@ demo.state1.prototype = {
             //path = pathFinder.findPath(zombieTwo.x, zombieTwo.y, house.x, house.y, gridBackup);
             //zombieTwo.setPath(path);
             houseZombies.add(zombieTwo);
-            */
+            
             
         }				
         ////////////////////////////////
@@ -243,25 +245,35 @@ demo.state1.prototype = {
         
         spaceBar = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
         marker = game.add.graphics();
-        marker.lineStyle(2, 0xffffff, 1);
+        marker.lineStyle(2, 0x32cd32, 1);
         marker.drawRect(0, 0, 32, 32);
+        
+        //adding WASD movement Controls
+        w = game.input.keyboard.addKey(Phaser.Keyboard.W);
+        a = game.input.keyboard.addKey(Phaser.Keyboard.A);
+        s = game.input.keyboard.addKey(Phaser.Keyboard.S);
+        d = game.input.keyboard.addKey(Phaser.Keyboard.D);
 		
 		        	
     },
     
     update: function() {
-        //IF STATEMENT FOR ENDING THE GAME - "If point value hits 0"
         
-        if(spaceBar.isDown) {
-            marker.x = layer.getTileX(game.input.activePointer.worldX)
-            
-        }
-            
-        
+        //IF STATEMENT FOR ENDING THE GAME - "If point value hits 0"   
         if (player.health <= 0 || house.health <= 0) {
             player.kill();
             game.state.start('state2');
         }
+        
+        marker.x = dirt.getTileX(game.input.activePointer.worldX) * 32;
+        marker.y = dirt.getTileY(game.input.activePointer.worldY) * 32;
+        
+        
+        if(spaceBar.isDown) {
+            togglePlaceCrate = true;
+            //this.placeCrate(collisions.getTileX(marker.x), collisions.getTileY(marker.y));
+        }
+        
         
         //causes zombies to constantly move towards player
 		//IF STATEMENT TO MOVE CLOSER TO HOUSE OR PLAYER
@@ -348,13 +360,9 @@ demo.state1.prototype = {
 		//game.physics.arcade.collide(healthBoosts, player);
 		//game.physics.arcade.collide(player,healthBoosts);
 
-		
-		//zombies.forEach(game.physics.arcade.moveToObject, game.physics.arcade, false, player, 100);
+			
         //checks zombieAngle between zombies and player and adjusts animation accordingly
         //angle measured in radians and range normalized to [0,2pi]
-
-		//zombies.forEach(game.physics.arcade.moveToObject, game.physics.arcade, false, player, 50);
-			
 		zombies.forEach(function(self) {
             zombieAngle = (Phaser.Math.normalizeAngle(game.physics.arcade.angleBetween(self, player)))
             
@@ -393,24 +401,24 @@ demo.state1.prototype = {
            	 game.physics.arcade, false);
 
         //game controls for player
-        if(cursors.up.isDown){
+        if(cursors.up.isDown || w.isDown){
             player.body.velocity.y = -vel;
         }
-        else if(cursors.down.isDown){
+        else if(cursors.down.isDown || s.isDown){
             player.body.velocity.y = vel;
         }
         else{
             player.body.velocity.y = 0;
         }
-        if(cursors.left.isDown){
+        if(cursors.left.isDown || a.isDown){
             player.body.velocity.x = -vel;
         }
-        else if(cursors.right.isDown){
+        else if(cursors.right.isDown || d.isDown){
             player.body.velocity.x = vel;
         }
         else{
             player.body.velocity.x = 0;
-            if (!cursors.down.isDown && !cursors.up.isDown && !cursors.left.isDown && !cursors.right.isDown) {
+            if ((!cursors.down.isDown && !cursors.up.isDown && !cursors.left.isDown && !cursors.right.isDown) || (!w.isDown && !a.isDown && !s.isDown && !d.isDown)) {
                 player.animations.stop(null, true);
             }
         }
@@ -463,7 +471,7 @@ demo.state1.prototype = {
 		
 		//FIRE BULLETS 
         if (player.alive = true && game.input.activePointer.isDown) {
-            this.fire(player.velocity, barrelX, barrelY);
+            this.fire(barrelX, barrelY);
     	}
         
         game.physics.arcade.overlap(zombies, bullets, this.hitGroup);
@@ -471,9 +479,8 @@ demo.state1.prototype = {
 		game.physics.arcade.overlap(player, zombies, this.collidePlayer);
         game.physics.arcade.overlap(player, houseZombies, this.collidePlayer);
 		game.physics.arcade.overlap(house, houseZombies, this.collideHouse);
-        game.physics.arcade.overlap(collisions[0], bullets, this.hitHouse);
         game.physics.arcade.overlap(house, bullets, this.hitHouse);
-		game.physics.arcade.overlap(  player, healthBar, this.collideHealth);
+		game.physics.arcade.overlap(bullets, healthBar, this.collideHealth);
 
     },  
 	
@@ -485,7 +492,7 @@ demo.state1.prototype = {
 		//game.debug.body(healthBoosts);
 	},
 
-    fire: function(playerSpeed, barrelX, barrelY) {
+    fire: function(barrelX, barrelY) {
 
         if (game.time.now > nextFire && bullets.countDead() > 0)
         {
@@ -493,12 +500,12 @@ demo.state1.prototype = {
 
             bullet = bullets.getFirstDead();
             game.physics.enable(bullet);
-            bullet.body.setSize(20, 20);
+            bullet.body.setSize(48, 48);
 
             bullet.reset(barrelX, barrelY);
 
             //bulletVelocity = 300 + Phaser.Math.abs(playerVelocity);
-            game.physics.arcade.moveToPointer(bullet, 800);
+            game.physics.arcade.moveToPointer(bullet, 1200);
             bullet.rotation = game.physics.arcade.angleToPointer(bullet);
         }
     },
@@ -507,9 +514,7 @@ demo.state1.prototype = {
 	collidePlayer: function(player, zombie)
 	{
 		healthBar.render();
-		player.health-= 0.1;
-		
-
+        player.health-= 0.1;
 	},
     
 
@@ -536,7 +541,7 @@ demo.state1.prototype = {
 	
 	collideHealth: function( healthBoosts, player)
 	{
-		//healthBoosts.kill();
+		healthBoosts.kill();
 		
 		if ((player.health) < (player.maxHealth)){
 			var playerHealth = player.health 
@@ -571,7 +576,8 @@ demo.state1.prototype = {
         map.putTile(158, tileX, tileY);
         
         grid.setWalkableAt(tileX, tileY, false);
-        
+
+        /*
         zombies.forEach(function(self) {
 		gridBackup = grid.clone();
 		console.log(gridBackup);
@@ -585,7 +591,8 @@ demo.state1.prototype = {
 		path = pathFinder.findPath(Math.floor(self.x / 32),Math.floor(self.y / 32), Math.floor(house.x / 32), Math.floor(house.y / 32), gridBackup);
 		self.setPath(path);
 		},
-		game.physics.arcade, false);      
+		game.physics.arcade, false);
+        */
     }
     
     
