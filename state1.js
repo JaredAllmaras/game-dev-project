@@ -1,5 +1,5 @@
 //Start of gameplay
-var cursors, vel = 200, pathFinder, gameWidth, gameHeight, tileSize = 32, collisions, grass, player, zombie, zombieTwo, houseZombies, zombies, barrelX, barrelY ,bullet, bullets, fireRate = 100, nextFire = 200, house, healthBar, path, pathFinder, grid, gridBackup,healthBoosts,healthBoost;;
+var cursors, vel = 200, pathFinder, gameWidth, gameHeight, tileSize = 32, collisions, grass, player, zombie, zombieTwo, houseZombies, zombies, barrelX, barrelY ,bullet, bullets, fireRate = 100, nextFire = 200, house, healthBar, path, pathFinder, grid, gridBackup,healthBoosts,healthBoost, music, uiBar, statusBar, gameBar;
 
 /*var timer;
 var total = 0;*/
@@ -23,6 +23,11 @@ demo.state1.prototype = {
         game.load.spritesheet('zombie','assets/sprites/zombieSprites.png', 52, 67);
         game.load.spritesheet('bloodSplatter', 'assets/sprites/bloodSpritesheet.png', 170, 120);
         game.load.json('gameMap', 'assets/Tilemaps/singleHouseMap.json');
+        game.load.audio('theme','assets/sounds/theme.mp3');
+        game.load.image('statBar','assets/sprites/health-Bar.png');
+        game.load.image('uiBar','assets/sprites/whiteBar.png');
+
+        
     },
 
     create: function() {
@@ -40,6 +45,8 @@ demo.state1.prototype = {
         game.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
         game.renderer.renderSession.roundPixels = true;
         
+        
+
         //Loads a copy of of the collision layer
         var collisionLayer = game.cache.getJSON('gameMap');
         var mapCopy = collisionLayer.layers[0].data;
@@ -111,7 +118,8 @@ demo.state1.prototype = {
 		player.maxHealth = 100;
         player.damage = 10;
         
-	
+	    
+        
 
         /////////////////////////////////////////////////
 		//CODE FOR ZOMBIES
@@ -155,11 +163,11 @@ demo.state1.prototype = {
             houseZombies.add(zombieTwo);
             */
             
-        }				
-        ////////////////////////////////
-		//HEALTH BOOST
-		///////////////////////////////
-		healthBoosts = game.add.group();
+        }	
+        
+        healthBoosts = game.add.sprite(1500, 1780,'health-boost');
+        healthBoosts = game.add.group();
+
 		healthBoosts.enableBody = true;
 		//create health boost in random places 
 
@@ -173,6 +181,20 @@ demo.state1.prototype = {
 			
 			
 		}
+                 
+        //////////////
+        //UI BAR
+        //////////////
+        uiBar = game.add.sprite(1500,1780,'uiBar');
+        uiBar.fixedToCamera = true;
+        uiBar.width = 2000;
+        uiBar.cameraOffset.setTo(-650,660);
+        console.log(uiBar.inWorld);
+        
+        ////////////////////////////////
+		//HEALTH BOOST
+		///////////////////////////////
+
 		////////////////////////////////////
         //DISPLAY HOUSE
 		//CREATES TOP LAYER OF THE MAP, RENDERED ABOVE ALL ELSE
@@ -181,7 +203,7 @@ demo.state1.prototype = {
 		house.health = 100;
 
 		//House Health Text Bar
-		houseHealth = game.add.text(game.world.width - 150,10,'HOUSE: ' + Math.round(house.health) +'%', {font:'20px Cambria', fill: '#eeb8a4'});
+		houseHealth = game.add.text(game.world.width - 150,10,'HOUSE: ' + Math.round(house.health) +'%', {font:'20px Cambria', fill: '#3add71'});
 		houseHealth.style.backgroundColor = '#b20000'
 		houseHealth.style.fontWeight = 'bold'
 		houseHealth.render = function(){
@@ -189,7 +211,7 @@ demo.state1.prototype = {
 		};
 		
 		houseHealth.fixedToCamera = true;
-		houseHealth.cameraOffset.setTo(2,35);
+		houseHealth.cameraOffset.setTo(150,750);
         
         //House Anchoring
         game.physics.enable(house);		
@@ -199,8 +221,7 @@ demo.state1.prototype = {
 		house.body.immovable = true;
 		house.body.moves = false;
 		
-		
-		
+
 		
 		zombies.forEach(function(self) {
 		gridBackup = grid.clone();
@@ -239,19 +260,63 @@ demo.state1.prototype = {
 		healthBar.text = 'HEALTH : '+ Math.round(player.health) +'%';  
 		};
 		healthBar.fixedToCamera = true;
-		healthBar.cameraOffset.setTo(2,5);
+		healthBar.cameraOffset.setTo(2,750);
+        
+        
+        
+   
+        /*
+        uiBar = game.add.text(game.world.width, 10, " UI BAR", {fill: '#ffffff'});
+        
+        uiBar.render = function(){
+		uiBar.text = 'UI BAR';
+        };
+        uiBar.fixedToCamera = true;
+        uiBar.cameraOffset.setTo(300,750);
+        uiBar.style.backgroundColor = '#ffffff';
+        uiBar.style.fill = '#ffffff';
+        */
+
+        gameBar = new Phaser.Graphics(game,190,game.world.centerY);
+        gameBar.beginFill('#ffffff');
+        gameBar.drawRoundedRect(game.world.centerX,game.world.centerY,game.world.width,50,1);
+        gameBar.endFill(); 
+        gameBar.fixedToCamera = true;
+        gameBar.cameraOffset.setTo(0,750);
+        console.log(gameBar.getLocalBounds);
+        
+        
+		
+        
+        
+        //CREATE HEALTH STATUS BAR
+        /*
+        statusBar = new StatusBar();
+        statusBar.x = gameWidth/2;
+        statusBar.y = gameHeight/2;
+        statusBar.setPrecent(100);
+        */
         
         spaceBar = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
         marker = game.add.graphics();
         marker.lineStyle(2, 0xffffff, 1);
         marker.drawRect(0, 0, 32, 32);
 		
-		        	
+        //MUSIC
+        music = game.add.audio('theme');
+        music.play();
+        //music.play(1,'true',true);
+
+        //game.sound.setDecodedCallback(music,start,this);
+        
+        
+        
+        
     },
     
     update: function() {
         //IF STATEMENT FOR ENDING THE GAME - "If point value hits 0"
-        
+
         if(spaceBar.isDown) {
             marker.x = layer.getTileX(game.input.activePointer.worldX)
             
@@ -465,7 +530,15 @@ demo.state1.prototype = {
         if (player.alive = true && game.input.activePointer.isDown) {
             this.fire(player.velocity, barrelX, barrelY);
     	}
-        
+        if (music.isPlaying == false){
+            music.play();
+        }
+        //console.log(music.isPlaying);
+        //console.log(music.currentTime);
+        console.log(gameBar.inCamera);
+        //console.log(gameBar.inWorld);
+
+
         game.physics.arcade.overlap(zombies, bullets, this.hitGroup);
         game.physics.arcade.overlap(houseZombies, bullets, this.hitGroup);
 		game.physics.arcade.overlap(player, zombies, this.collidePlayer);
@@ -483,6 +556,7 @@ demo.state1.prototype = {
         //game.debug.body(house);        
         //game.debug.text('Time until event: ' + timer.duration.toFixed(0), 32, 32);
 		//game.debug.body(healthBoosts);
+        game.debug.soundInfo(music,20,32);
 	},
 
     fire: function(playerSpeed, barrelX, barrelY) {
@@ -586,9 +660,45 @@ demo.state1.prototype = {
 		self.setPath(path);
 		},
 		game.physics.arcade, false);      
-    }
+    },
     
-    
+    start: function(music){
+        music.play();
+        if (music.isPlaying == false){
+            music.play();
+        }
+        
+    },
+    /*
+    hasLooped: function(sound){
+        
+        loopCount++;
+
+        sounds.shift();
+        music.loopFull(0.6);
+        
+
+        if (loopCount === 1)
+        {
+            sounds.shift();
+            music.loopFull(0.6);
+        }
+        else if (loopCount === 2)
+        {
+            current = game.rnd.pick(sounds);
+            current.loopFull();
+        }
+        else if (loopCount > 2)
+        {
+            current.stop();
+            current = game.rnd.pick(sounds);
+            current.loopFull();
+            text.text = current.key;
+        }
+
+ 
+    },
+    */
     /*
     findObjectsByType: function(type, map, layer) {
         var result = new Array();
