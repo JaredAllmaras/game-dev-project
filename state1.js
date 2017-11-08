@@ -1,7 +1,11 @@
 //Start of gameplay
 var cursors, vel = 200, pathFinder, gameWidth, gameHeight, tileSize = 32, crosshair, collisions, grass, player, zombie, zombieTwo, houseZombies, zombies, barrelX, barrelY ,bullet, bullets, fireRate = 100, nextFire = 200, house, healthBar, path, pathFinder, grid, gridBackup,healthBoosts,healthBoost, music, uiBar, statusBar,
+<<<<<<< HEAD
 placeCrateTimer ,gameBar, zombieCount, togglePlaceCrate = false,houseBoosts;
 
+=======
+placeCrateTimer ,gameBar, zombieCount, togglePlaceCrate = false, gunshot;
+>>>>>>> origin/master
 
 
 //player movement controls
@@ -31,6 +35,7 @@ demo.state1.prototype = {
         game.load.spritesheet('bloodSplatter', 'assets/sprites/bloodSpritesheet.png', 170, 120);
         game.load.json('gameMap', 'assets/Tilemaps/singleHouseMap.json');
         game.load.audio('theme','assets/sounds/theme.mp3');
+        game.load.audio('gunshot', 'assets/sounds/gunshot.mp3');
         game.load.image('statBar','assets/sprites/health-Bar.png');
         game.load.image('uiBar','assets/sprites/whiteBar.png');
         game.load.image('house-boost','assets/sprites/home.png');
@@ -359,6 +364,8 @@ demo.state1.prototype = {
         music = game.add.audio('theme');
         music.play();
         //music.play(1,'true',true);
+        
+        gunshot = game.add.audio('gunshot');
 
         //game.sound.setDecodedCallback(music,start,this);
         
@@ -674,6 +681,7 @@ demo.state1.prototype = {
             //bulletVelocity = 300 + Phaser.Math.abs(playerVelocity);
             game.physics.arcade.moveToPointer(bullet, 1200);
             bullet.rotation = game.physics.arcade.angleToPointer(bullet);
+            gunshot.play();
         }
     },
 
