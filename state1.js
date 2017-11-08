@@ -1,6 +1,11 @@
 //Start of gameplay
+<<<<<<< HEAD
 var cursors, vel = 200, pathFinder, gameWidth, gameHeight, tileSize = 32, crosshair, collisions, grass, player, zombie, zombieTwo, houseZombies, zombies, barrelX, barrelY ,bullet, bullets, fireRate = 100, nextFire = 200, house, healthBar, path, pathFinder, grid, gridBackup,healthBoosts,healthBoost, music, uiBar, statusBar,
 placeCrateTimer ,gameBar, zombieCount, togglePlaceCrate = false;
+=======
+
+var cursors, vel = 200,pathFinder, gameWidth, gameHeight, tileSize = 32, collisions, grass, player, zombie, zombieTwo, houseZombies, zombies, barrelX, barrelY ,bullet, bullets, fireRate = 100, nextFire = 200, house, healthBar, path, pathFinder, grid, gridBackup,healthBoosts,healthBoost, music, uiBar, statusBar, gameBar, zombieCount, houseBoosts;
+>>>>>>> 243f8d7c8565e6d9bdf228452eda570bfbed7771
 
 //player movement controls
 var spaceBar, w, a, s, d;
@@ -31,6 +36,7 @@ demo.state1.prototype = {
         game.load.audio('theme','assets/sounds/theme.mp3');
         game.load.image('statBar','assets/sprites/health-Bar.png');
         game.load.image('uiBar','assets/sprites/whiteBar.png');
+        game.load.image('house-boost','assets/sprites/home.png');
 
         
     },
@@ -141,12 +147,9 @@ demo.state1.prototype = {
 		houseZombies.damageAmount = 0.01;	
 
 		//create range of int for zombies to be created
-		 //Phaser.RandomDataGenerator.intergetInRange(2000,)
-		
-        
+        //Phaser.RandomDataGenerator.intergetInRange(2000,)
         //create zombies 
-
-        for ( var i = 0; i<50; i++)
+        for ( var i = 0; i<25; i++)
         {
  
             var randomX = game.world.randomX;
@@ -180,15 +183,17 @@ demo.state1.prototype = {
         */
 
         ////////////////////////////////
-		//HEALTH BOOST
+		//HOUSE & HEALTH BOOST
 		///////////////////////////////
+        //player health boosts
         //healthBoosts = game.add.sprite(1500, 1780,'health-boost');
         healthBoosts = game.add.physicsGroup();
-
+        
+        
 		//healthBoosts.enableBody = true;
 		//create health boost in random places 
 
-		for (var i =0; i<10; i++){
+		for (var i =0; i<15; i++){
 			healthBoost = healthBoosts.create(game.world.randomX, game.world.randomY, 'health-boost');
 			
 			healthBoost.anchor.setTo(0.5,0.5);
@@ -200,8 +205,21 @@ demo.state1.prototype = {
 		}
         healthBoost.body.immovable = true;
 		healthBoost.body.moves = false;
-           
-        
+
+        //player house health boosts
+        houseBoosts = game.add.physicsGroup();
+
+        for (var i=0; i<15; i++){
+			houseBoost = houseBoosts.create(game.world.randomX, game.world.randomY, 'house-boost');
+			
+			houseBoost.anchor.setTo(0.5,0.5);
+			houseBoost.scale.setTo(0.3,0.3);
+			houseBoost.alive = true;
+			houseBoost.health = 0;
+			
+        } 
+        houseBoost.body.immovable = true;
+		houseBoost.body.moves = false;
         
         //////////////
         //UI BAR
@@ -222,6 +240,7 @@ demo.state1.prototype = {
 		////////////////////////////////////
 		house = game.add.sprite(1938,1279,'house');
 		house.health = 100;
+        house.maxHealth = 100;
 
 		//House Health Text Bar
 		houseHealth = game.add.text(game.world.width - 150,10,'HOUSE: ' + Math.round(house.health) +'%', {font:'20px Cambria', fill: '#3add71'});
@@ -282,7 +301,7 @@ demo.state1.prototype = {
 		healthBar.cameraOffset.setTo(2,750);
         
         
-        
+        /*
         gameBar = new Phaser.Graphics(game,190,game.world.centerY);
         gameBar.beginFill('#ffffff');
         gameBar.drawRoundedRect(game.world.centerX,game.world.centerY,game.world.width,50,1);
@@ -290,6 +309,7 @@ demo.state1.prototype = {
         gameBar.fixedToCamera = true;
         gameBar.cameraOffset.setTo(0,750);
         console.log(gameBar.getLocalBounds);
+        */
         
         
 		
@@ -324,6 +344,7 @@ demo.state1.prototype = {
         //MUSIC
         music = game.add.audio('theme');
         music.play();
+<<<<<<< HEAD
         //music.play(1,'true',true);
 
         //game.sound.setDecodedCallback(music,start,this);
@@ -333,6 +354,8 @@ demo.state1.prototype = {
         placeCrateTimer = game.time.create(false);
         
         
+=======
+>>>>>>> 243f8d7c8565e6d9bdf228452eda570bfbed7771
     },
     
     update: function() {
@@ -433,16 +456,25 @@ demo.state1.prototype = {
         }, game.physics.arcade, false);
         
         //causes zombies to constantly move towards player
-		
+
 		// get value of distance from player to zombie 
 		houseDistance = game.physics.arcade.distanceBetween(zombie, house, true)
 		
 		//get value of distance from house to zombie 
 		playerDistance = game.physics.arcade.distanceBetween(zombie, player, false)
 		
+<<<<<<< HEAD
         
 
 			
+=======
+        game.physics.arcade.collide(zombies, zombies);
+        game.physics.arcade.collide(houseZombies, houseZombies);
+        game.physics.arcade.collide(houseZombies, zombies);
+        game.physics.arcade.collide(zombies, collisions);
+        game.physics.arcade.collide(player, collisions);  
+        
+>>>>>>> 243f8d7c8565e6d9bdf228452eda570bfbed7771
         //checks zombieAngle between zombies and player and adjusts animation accordingly
         //angle measured in radians and range normalized to [0,2pi]
 		zombies.forEach(function(self) {
@@ -590,9 +622,18 @@ demo.state1.prototype = {
             {
                 console.log('hit');
             }
+<<<<<<< HEAD
         //console.log(zombieCount);
 
 		game.physics.arcade.overlap(bullets, healthBar, this.collideHealth);
+=======
+        console.log(zombieCount);
+        
+		if(game.physics.arcade.collide(player,houseBoosts, this.collideHouseHealth,this.processHandler,this ))
+            {
+                console.log('hit house');
+            }
+>>>>>>> 243f8d7c8565e6d9bdf228452eda570bfbed7771
 
     },  
 	
@@ -638,6 +679,7 @@ demo.state1.prototype = {
 		
 	},
     
+    
     hitHouse: function(house, bullet) {
       bullet.kill()
     },
@@ -661,22 +703,40 @@ demo.state1.prototype = {
 	collideHealth: function( sprite, healthBoosters)
 	{
 		if ((sprite.health) < (sprite.maxHealth)){
-			var playerHealth = sprite.health 
-            healthBoosts.kill();
-			
+			var playerHealth = sprite.health 			
             if ((100-playerHealth)<10){
 				sprite.health = sprite.maxHealth
-                healthBoosters.kill();
 			}
 			else{
 				sprite.health +=10
                 healthBoosters.kill();
 			}
 		}
-		healthBar.render();
+        healthBar.render();
+        healthBoosters.kill();
 
 		
 	},
+    
+    collideHouseHealth: function(sprite, houseBoosters)
+    {
+        
+        if ((house.health) < (house.maxHealth)){
+            var homeHealth = house.health 			
+            if ((100-homeHealth)<10){
+				house.health = house.maxHealth
+			}
+			else{
+				house.health +=10
+                houseBoosters.kill();
+			}
+		}
+        houseHealth.render();
+        houseBoosters.kill();
+
+		  
+        
+    },
     processHandler(sprite, healthBoosters)
     {
       return true;  
