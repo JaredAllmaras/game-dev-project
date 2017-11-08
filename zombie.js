@@ -13,7 +13,6 @@ var Zombie = function(game, x, y, target) {
     this.alive = true;
     this.health = 100;
     game.physics.enable(this);
-    this.body.setSize(32, 48, 10, 10);
     game.add.existing(this);
     
     this.animations.add('upLeft', [4, 5, 6, 7], 8, true);
@@ -30,9 +29,7 @@ Zombie.prototype.constructor = Zombie;
 
 Zombie.prototype.update = function() {
     //this.followPath(game);
-    
-    
-    
+   
 };
 
 Zombie.prototype.setPath = function(path) {
@@ -42,39 +39,3 @@ Zombie.prototype.setPath = function(path) {
 Zombie.prototype.followPath = function(game) {
                  
 };
-
-/*
-Zombie.prototype.nextTile = function() {
-    
-    if (this.path) {
-        if (this.currentTile < this.path.length) {
-            this.currentTile++;
-        }
-        if (this.path[this.currentTile]) {
-            this.next_positionX = parseInt(this.path[this.currentTile].x * GlobalGame.tileSquare);
-            this.next_positionY = parseInt(this.path[this.currentTile].y * GlobalGame.tileSquare);
-        }
-        if (this.next_positionX > this.x) {
-            this.speedX = this.speed;
-            this.angle = 0;
-        }
-        else if (this.next_positionX < this.x) {
-            this.speed = -this.speed;
-            this.angle = 180;
-        }
-        else {
-            this.speedX = 0;
-        }
-        if (this.next_positionY > this.y) {
-            this.speedY = this.speed;
-            this.angle = 90;
-        }
-        else if (this.next_positionY < this.y) {
-            this.speedY = -this.speed;
-            this.angle = -90;
-        }
-        else {
-            this.speedY = 0;
-        }
-    }
-}; */
