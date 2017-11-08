@@ -113,7 +113,7 @@ demo.state1.prototype = {
         player.body.collideWorldBounds = true;
         player.scale.setTo(0.7, 0.7);
         player.anchor.setTo(0.5, 0.5);
-        player.body.setSize(32, 32, 12, 24);
+        player.body.setSize(32, 32, 12, 32);
         game.camera.follow(player);
         
         player.animations.add('upRight', [0, 1, 2, 3], 9, true);
