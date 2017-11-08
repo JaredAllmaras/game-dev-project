@@ -1,6 +1,6 @@
 //Start of gameplay
 
-var cursors, vel = 200,pathFinder, gameWidth, gameHeight, tileSize = 32, collisions, grass, player, zombie, zombieTwo, houseZombies, zombies, barrelX, barrelY ,bullet, bullets, fireRate = 100, nextFire = 200, house, healthBar, path, pathFinder, grid, gridBackup,healthBoosts,healthBoost, music, uiBar, statusBar, gameBar, zombieCount;
+var cursors, vel = 200,pathFinder, gameWidth, gameHeight, tileSize = 32, collisions, grass, player, zombie, zombieTwo, houseZombies, zombies, barrelX, barrelY ,bullet, bullets, fireRate = 100, nextFire = 200, house, healthBar, path, pathFinder, grid, gridBackup,healthBoosts,healthBoost, music, uiBar, statusBar, gameBar, zombieCount, houseBoosts;
 
 //player movement controls
 var spaceBar, w, a, s, d;
@@ -31,6 +31,7 @@ demo.state1.prototype = {
         game.load.audio('theme','assets/sounds/theme.mp3');
         game.load.image('statBar','assets/sprites/health-Bar.png');
         game.load.image('uiBar','assets/sprites/whiteBar.png');
+        game.load.image('house-boost','assets/sprites/home.png');
 
         
     },
@@ -175,15 +176,17 @@ demo.state1.prototype = {
         */
 
         ////////////////////////////////
-		//HEALTH BOOST
+		//HOUSE & HEALTH BOOST
 		///////////////////////////////
+        //player health boosts
         //healthBoosts = game.add.sprite(1500, 1780,'health-boost');
         healthBoosts = game.add.physicsGroup();
-
+        
+        
 		//healthBoosts.enableBody = true;
 		//create health boost in random places 
 
-		for (var i =0; i<10; i++){
+		for (var i =0; i<15; i++){
 			healthBoost = healthBoosts.create(game.world.randomX, game.world.randomY, 'health-boost');
 			
 			healthBoost.anchor.setTo(0.5,0.5);
@@ -195,8 +198,21 @@ demo.state1.prototype = {
 		}
         healthBoost.body.immovable = true;
 		healthBoost.body.moves = false;
-           
-        
+
+        //player house health boosts
+        houseBoosts = game.add.physicsGroup();
+
+        for (var i=0; i<15; i++){
+			houseBoost = houseBoosts.create(game.world.randomX, game.world.randomY, 'house-boost');
+			
+			houseBoost.anchor.setTo(0.5,0.5);
+			houseBoost.scale.setTo(0.3,0.3);
+			houseBoost.alive = true;
+			houseBoost.health = 0;
+			
+        } 
+        houseBoost.body.immovable = true;
+		houseBoost.body.moves = false;
         
         //////////////
         //UI BAR
@@ -217,6 +233,7 @@ demo.state1.prototype = {
 		////////////////////////////////////
 		house = game.add.sprite(1938,1279,'house');
 		house.health = 100;
+        house.maxHealth = 100;
 
 		//House Health Text Bar
 		houseHealth = game.add.text(game.world.width - 150,10,'HOUSE: ' + Math.round(house.health) +'%', {font:'20px Cambria', fill: '#3add71'});
@@ -543,7 +560,7 @@ demo.state1.prototype = {
         //console.log(gameBar.inCamera);
         //console.log(gameBar.inWorld);
 
-        if zombies.
+
         game.physics.arcade.overlap(zombies, bullets, this.hitGroup);
         game.physics.arcade.overlap(houseZombies, bullets, this.hitGroup);
 		game.physics.arcade.overlap(player, zombies, this.collidePlayer);
@@ -557,8 +574,11 @@ demo.state1.prototype = {
                 console.log('hit');
             }
         console.log(zombieCount);
-
-		game.physics.arcade.overlap(bullets, healthBar, this.collideHealth);
+        
+		if(game.physics.arcade.collide(player,houseBoosts, this.collideHouseHealth,this.processHandler,this ))
+            {
+                console.log('hit house');
+            }
 
     },  
 	
@@ -604,6 +624,7 @@ demo.state1.prototype = {
 		
 	},
     
+    
     hitHouse: function(house, bullet) {
       bullet.kill()
     },
@@ -637,6 +658,26 @@ demo.state1.prototype = {
 
 		
 	},
+    
+    collideHouseHealth: function(sprite, houseBoosters)
+    {
+        
+        if ((house.health) < (house.maxHealth)){
+            var homeHealth = house.health 			
+            if ((100-homeHealth)<10){
+				house.health = house.maxHealth
+			}
+			else{
+				house.health +=10
+                houseBoosters.kill();
+			}
+		}
+        houseHealth.render();
+        houseBoosters.kill();
+
+		  
+        
+    },
     processHandler(sprite, healthBoosters)
     {
       return true;  
