@@ -1,9 +1,10 @@
 //Start of gameplay
 
-var cursors, vel = 200, pathFinder, gameWidth, gameHeight, tileSize = 32, collisions, grass, player, zombie, zombieTwo, houseZombies, zombies, barrelX, barrelY ,bullet, bullets, fireRate = 100, nextFire = 200, house, healthBar, path, pathFinder, grid, gridBackup,healthBoosts, map, togglePlaceCrate, music, uiBar, statusBar, gameBar, zombieCount;;
+var cursors, vel = 200,pathFinder, gameWidth, gameHeight, tileSize = 32, collisions, grass, player, zombie, zombieTwo, houseZombies, zombies, barrelX, barrelY ,bullet, bullets, fireRate = 100, nextFire = 200, house, healthBar, path, pathFinder, grid, gridBackup,healthBoosts,healthBoost, music, uiBar, statusBar, gameBar, zombieCount;
 
 //player movement controls
 var spaceBar, w, a, s, d;
+
 
 /*var timer;
 var total = 0;*/
@@ -138,13 +139,9 @@ demo.state1.prototype = {
 		houseZombies.damageAmount = 0.01;	
 
 		//create range of int for zombies to be created
-		 //Phaser.RandomDataGenerator.intergetInRange(2000,)
-		
-        
+        //Phaser.RandomDataGenerator.intergetInRange(2000,)
         //create zombies 
         for ( var i = 0; i<25; i++)
-
-
         {
  
             var randomX = game.world.randomX;
@@ -165,8 +162,6 @@ demo.state1.prototype = {
             //path = pathFinder.findPath(zombieTwo.x, zombieTwo.y, house.x, house.y, gridBackup);
             //zombieTwo.setPath(path);
             houseZombies.add(zombieTwo);
-
-            
             zombieCount +=1
         }	
         //ZOMBIE COUNT
@@ -178,7 +173,6 @@ demo.state1.prototype = {
 		zombieCount.text = 'HOUSE : '+ Math.round(house.health) +'%';    
 		};
         */
-        
 
         ////////////////////////////////
 		//HEALTH BOOST
@@ -285,7 +279,7 @@ demo.state1.prototype = {
 		healthBar.cameraOffset.setTo(2,750);
         
         
-        
+        /*
         gameBar = new Phaser.Graphics(game,190,game.world.centerY);
         gameBar.beginFill('#ffffff');
         gameBar.drawRoundedRect(game.world.centerX,game.world.centerY,game.world.width,50,1);
@@ -293,6 +287,7 @@ demo.state1.prototype = {
         gameBar.fixedToCamera = true;
         gameBar.cameraOffset.setTo(0,750);
         console.log(gameBar.getLocalBounds);
+        */
         
         
 		
@@ -320,25 +315,16 @@ demo.state1.prototype = {
         //MUSIC
         music = game.add.audio('theme');
         music.play();
-        //music.play(1,'true',true);
-
-        //game.sound.setDecodedCallback(music,start,this);
-        
-        
-        
-        
     },
     
     update: function() {
-        //IF STATEMENT FOR ENDING THE GAME - "If point value hits 0"
 
+        //IF STATEMENT FOR ENDING THE GAME - "If point value hits 0"
         if(spaceBar.isDown) {
             marker.x = layer.getTileX(game.input.activePointer.worldX)
             
         }
-            
 
-        
         //IF STATEMENT FOR ENDING THE GAME - "If point value hits 0"   
         if (player.health <= 0 || house.health <= 0) {
             player.kill();
@@ -424,7 +410,7 @@ demo.state1.prototype = {
         }, game.physics.arcade, false);
         
         //causes zombies to constantly move towards player
-		
+
 		// get value of distance from player to zombie 
 		houseDistance = game.physics.arcade.distanceBetween(zombie, house, true)
 		
@@ -434,13 +420,9 @@ demo.state1.prototype = {
         game.physics.arcade.collide(zombies, zombies);
         game.physics.arcade.collide(houseZombies, houseZombies);
         game.physics.arcade.collide(houseZombies, zombies);
-
         game.physics.arcade.collide(zombies, collisions);
-        game.physics.arcade.collide(player, collisions);   
-		//game.physics.arcade.collide(healthBoosts, player);
-		//game.physics.arcade.collide(player,healthBoosts);
-
-			
+        game.physics.arcade.collide(player, collisions);  
+        
         //checks zombieAngle between zombies and player and adjusts animation accordingly
         //angle measured in radians and range normalized to [0,2pi]
 		zombies.forEach(function(self) {
@@ -561,7 +543,7 @@ demo.state1.prototype = {
         //console.log(gameBar.inCamera);
         //console.log(gameBar.inWorld);
 
-
+        if zombies.
         game.physics.arcade.overlap(zombies, bullets, this.hitGroup);
         game.physics.arcade.overlap(houseZombies, bullets, this.hitGroup);
 		game.physics.arcade.overlap(player, zombies, this.collidePlayer);
@@ -576,6 +558,7 @@ demo.state1.prototype = {
             }
         console.log(zombieCount);
 
+		game.physics.arcade.overlap(bullets, healthBar, this.collideHealth);
 
     },  
 	
@@ -640,22 +623,17 @@ demo.state1.prototype = {
 	collideHealth: function( sprite, healthBoosters)
 	{
 		if ((sprite.health) < (sprite.maxHealth)){
-			var playerHealth = sprite.health 
-
-			if ((100-playerHealth)<10){
+			var playerHealth = sprite.health 			
+            if ((100-playerHealth)<10){
 				sprite.health = sprite.maxHealth
-                healthBoosters.kill();
-
-				
 			}
 			else{
 				sprite.health +=10
                 healthBoosters.kill();
-
 			}
-			
 		}
-		healthBar.render();
+        healthBar.render();
+        healthBoosters.kill();
 
 		
 	},
@@ -696,11 +674,9 @@ demo.state1.prototype = {
 		path = pathFinder.findPath(Math.floor(self.x / 32),Math.floor(self.y / 32), Math.floor(house.x / 32), Math.floor(house.y / 32), gridBackup);
 		self.setPath(path);
 		},
-
-		game.physics.arcade, false);
+		game.physics.arcade, false);      
         */
     },
-    
     
     start: function(music){
         music.play();
@@ -708,7 +684,7 @@ demo.state1.prototype = {
             music.play();
         }
         
-    },
+    }
     /*
     hasLooped: function(sound){
         
