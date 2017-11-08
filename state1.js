@@ -1,11 +1,7 @@
 //Start of gameplay
-<<<<<<< HEAD
 var cursors, vel = 200, pathFinder, gameWidth, gameHeight, tileSize = 32, crosshair, collisions, grass, player, zombie, zombieTwo, houseZombies, zombies, barrelX, barrelY ,bullet, bullets, fireRate = 100, nextFire = 200, house, healthBar, path, pathFinder, grid, gridBackup,healthBoosts,healthBoost, music, uiBar, statusBar,
 placeCrateTimer ,gameBar, zombieCount, togglePlaceCrate = false;
-=======
 
-var cursors, vel = 200,pathFinder, gameWidth, gameHeight, tileSize = 32, collisions, grass, player, zombie, zombieTwo, houseZombies, zombies, barrelX, barrelY ,bullet, bullets, fireRate = 100, nextFire = 200, house, healthBar, path, pathFinder, grid, gridBackup,healthBoosts,healthBoost, music, uiBar, statusBar, gameBar, zombieCount, houseBoosts;
->>>>>>> 243f8d7c8565e6d9bdf228452eda570bfbed7771
 
 //player movement controls
 var spaceBar, w, a, s, d;
@@ -344,7 +340,6 @@ demo.state1.prototype = {
         //MUSIC
         music = game.add.audio('theme');
         music.play();
-<<<<<<< HEAD
         //music.play(1,'true',true);
 
         //game.sound.setDecodedCallback(music,start,this);
@@ -352,10 +347,7 @@ demo.state1.prototype = {
         
         
         placeCrateTimer = game.time.create(false);
-        
-        
-=======
->>>>>>> 243f8d7c8565e6d9bdf228452eda570bfbed7771
+    
     },
     
     update: function() {
@@ -463,18 +455,12 @@ demo.state1.prototype = {
 		//get value of distance from house to zombie 
 		playerDistance = game.physics.arcade.distanceBetween(zombie, player, false)
 		
-<<<<<<< HEAD
-        
 
-			
-=======
         game.physics.arcade.collide(zombies, zombies);
         game.physics.arcade.collide(houseZombies, houseZombies);
         game.physics.arcade.collide(houseZombies, zombies);
         game.physics.arcade.collide(zombies, collisions);
         game.physics.arcade.collide(player, collisions);  
-        
->>>>>>> 243f8d7c8565e6d9bdf228452eda570bfbed7771
         //checks zombieAngle between zombies and player and adjusts animation accordingly
         //angle measured in radians and range normalized to [0,2pi]
 		zombies.forEach(function(self) {
@@ -622,18 +608,15 @@ demo.state1.prototype = {
             {
                 console.log('hit');
             }
-<<<<<<< HEAD
         //console.log(zombieCount);
 
 		game.physics.arcade.overlap(bullets, healthBar, this.collideHealth);
-=======
         console.log(zombieCount);
         
 		if(game.physics.arcade.collide(player,houseBoosts, this.collideHouseHealth,this.processHandler,this ))
             {
                 console.log('hit house');
             }
->>>>>>> 243f8d7c8565e6d9bdf228452eda570bfbed7771
 
     },  
 	
