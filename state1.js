@@ -360,7 +360,7 @@ demo.state1.prototype = {
             game.state.start('state2');
         }
         
-        if(isPlaceCrate == true) {
+        if(this.isPlaceCrate == true) {
             crosshair.visible = false;
             marker.visible = true;
             marker.x = collisions.getTileX(game.input.activePointer.worldX) * 32;
@@ -373,7 +373,7 @@ demo.state1.prototype = {
             crosshair.y = (game.input.activePointer.worldY);
         }
         
-        if(spaceBar.downDuration(500)) {
+        if(spaceBar.downDuration(1)) {
             this.togglePlaceCrate();
         }
         
@@ -562,10 +562,10 @@ demo.state1.prototype = {
         }
 		
 		//FIRE BULLETS 
-        if (player.alive == true && game.input.activePointer.isDown && isPlaceCrate == false) {
+        if (player.alive == true && game.input.activePointer.isDown && this.isPlaceCrate == false) {
             this.fire(barrelX, barrelY);
     	}
-        else if (player.alive == true && game.input.activePointer.isDown && isPlaceCrate == true) {
+        else if (player.alive == true && game.input.activePointer.isDown && this.isPlaceCrate == true) {
             this.placeCrate(dirt.getTileX(marker.x), dirt.getTileY(marker.y));
         }
         if (music.isPlaying == false){
@@ -651,7 +651,7 @@ demo.state1.prototype = {
                 this.isPlaceCrate = false;
             }
         
-        console.log(isPlaceCrate);
+        console.log(this.isPlaceCrate);
     },
 
     //give hunter health and other game objects health
