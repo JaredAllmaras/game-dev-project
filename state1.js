@@ -333,7 +333,8 @@ demo.state1.prototype = {
         //music.play(1,'true',true);
         
         gunshot = game.add.audio('gunshot');
-
+        this.isPlaceCrate = false;
+        
         //game.sound.setDecodedCallback(music,start,this);
         
         
