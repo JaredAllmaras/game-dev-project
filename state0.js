@@ -5,13 +5,14 @@ var counter = 0;
 demo.state0 = function(){};
 demo.state0.prototype = {
     preload: function(){
-         game.load.image('logo', 'assets/death_and_decimation_logo2.png');
+         game.load.image('logo', 'assets/death_decimation logo.png');  
     },
     create: function(){
-        //  This creates a simple sprite that is using our loaded image and
-        //  displays it on-screen and assign it to a variable
-        var image = game.add.sprite(game.world.centerX, game.world.centerY, 'logo');
-
+        //loading in the logo
+        var image = game.add.sprite(game.world.centerX, 225, 'logo');
+        image.width = 600;
+        image.height = 600;
+     
         //  Moves the image anchor to the middle, so it centers inside the game properly
         image.anchor.set(0.5);
 
@@ -29,7 +30,7 @@ demo.state0.prototype = {
         game.state.start('state1');
         
         }
-        text.text = "WELCOME TO DEATH & DECIMATION. CLICK TO START PLAYING";
+      
     }
     
     /*listener: function(){
