@@ -1,5 +1,5 @@
 //Start of gameplay
-var cursors, vel = 200, pathFinder, gameWidth, gameHeight, tileSize = 32, crosshair, collisions, grass, player, zombie, zombieTwo, houseZombies, zombies, barrelX, barrelY ,bullet, bullets, fireRate = 100, nextFire = 200, toggleCrateDelay = 500, nextToggle, house, healthBar, path, pathFinder, grid, gridBackup, healthBoosts, healthBoost, music, uiBar, statusBar, placeCrateTimer ,gameBar, zombieCount, isPlaceCrate = false, gunshot, zoneX, zoneY, randomX, randomY;
+var cursors, vel = 200, pathFinder, gameWidth, gameHeight, tileSize = 32, crosshair, collisions, grass, player, zombie, zombieTwo, houseZombies, zombies, barrelX, barrelY ,bullet, bullets, fireRate = 100, nextFire = 200, toggleCrateDelay = 500, nextToggle, house, healthBar, path, pathFinder, grid, gridBackup, healthBoosts, healthBoost, music, uiBar, statusBar, placeCrateTimer ,gameBar, zombieCount, isPlaceCrate = false, gunshot, zoneX, zoneY, randomX, randomY, zone2X, zone2Y, zone3X, zone3Y, zone4X, zone4Y;
 
 //player movement controls
 var spaceBar, w, a, s, d;
@@ -110,7 +110,7 @@ demo.state1.prototype = {
         player.body.collideWorldBounds = true;
         player.scale.setTo(0.7, 0.7);
         player.anchor.setTo(0.5, 0.5);
-        player.body.setSize(32, 32, 12, 32);
+        player.body.setSize(30, 60, 13, 12);
         game.camera.follow(player);
         
         player.animations.add('upRight', [0, 1, 2, 3], 9, true);
@@ -145,6 +145,7 @@ demo.state1.prototype = {
 		//CREATES TOP LAYER OF THE MAP, RENDERED ABOVE ALL ELSE
 		////////////////////////////////////
 		house = game.add.sprite(1938,1279,'house');
+        //house.body.setSize();
 		house.health = 100;
         
         
@@ -154,25 +155,35 @@ demo.state1.prototype = {
         {
             //generates random integer 
             zoneX = game.rnd.integerInRange(100,300);
-            zoneY = game.rnd.integerInRange(100,300);
+            zoneY = game.rnd.integerInRange(100,2300);
             
+
             //spawns zombies in top left corner
             zombie = new Zombie(game, zoneX, zoneY, player);
+            
+            
             gridBackup = grid.clone();
             path = pathFinder.findPath(Math.floor(zombie.x / 32), Math.floor(zombie.y / 32), Math.floor(player.x / 32), Math.floor(player.y / 32), gridBackup);
             zombie.setPath(path);
             zombies.add(zombie);
          
             //generate random integer
-            zoneX = game.rnd.integerInRange(100, 300);
-            zoneY = game.rnd.integerInRange(100, 300);
+  
+            zoneX = game.rnd.integerInRange(100,300);
+            zoneY = game.rnd.integerInRange(100,2300);
+            
+            zone2X = game.rnd.integerInRange(3000,3500);
+            zone2Y = game.rnd.integerInRange(100,1300);
             
             //spawns zombies in top left corner
-            zombieTwo = new Zombie(game, zoneX, zoneY, house);
+            zombieTwo = new Zombie(game, zone2X, zone2Y, house);
+
             gridBackup = grid.clone();
             path = pathFinder.findPath(Math.floor(zombieTwo.x / 32),Math.floor(zombieTwo.y / 32), Math.floor(house.x / 32), Math.floor(house.y / 32), gridBackup);
             zombieTwo.setPath(path);
             houseZombies.add(zombieTwo);
+            
+            
         }	
         //ZOMBIE COUNT
         /*
@@ -247,13 +258,12 @@ demo.state1.prototype = {
 		houseHealth.cameraOffset.setTo(150,750);
         
         //House Anchoring
-        game.physics.enable(house);		
+        game.physics.enable(house, Phaser.Physics.ARCADE);		
 		house.anchor.setTo(.5,1.0);
-        house.body.setSize(440, 140, 22, 120);
+        house.body.setSize(440, 140, 22, 129);
 		house.enableBody = true;
 		house.body.immovable = true;
 		house.body.moves = false;
-		
 
 		
 		zombies.forEach(function(self) {
@@ -577,16 +587,18 @@ demo.state1.prototype = {
         //console.log(gameBar.inCamera);
         //console.log(gameBar.inWorld);
         
+        
         game.physics.arcade.collide(zombies, zombies);
         game.physics.arcade.collide(houseZombies, houseZombies);
         game.physics.arcade.collide(houseZombies, zombies);
         //game.physics.arcade.collide(zombies, house, this.collideHouse);
-        //game.physics.arcade.collide(houseZombies, house, this.collideHouse);
+        game.physics.arcade.collide( house,houseZombies,this.collideHouse,null,this);
         game.physics.arcade.collide(zombies, collisions);
         game.physics.arcade.collide(player, collisions);  
         game.physics.arcade.collide(player, fence);
         game.physics.arcade.collide(zombies, fence);
         game.physics.arcade.collide(houseZombies, fence);
+        game.physics.arcade.collide(player,house);
 		//game.physics.arcade.collide(healthBoosts, player);
 		//game.physics.arcade.collide(player,healthBoosts);
 
@@ -618,8 +630,9 @@ demo.state1.prototype = {
 	render: function() {
         //hitbox for debugging
         //game.debug.body(zombie);
-        //game.debug.body(house);
-        //game.debug.body(player);
+        game.debug.body(house);
+        game.debug.body(zombieTwo);
+        game.debug.body(player);
         //game.debug.text('Time until event: ' + timer.duration.toFixed(0), 32, 32);
 		//game.debug.body(healthBoosts);
         //game.debug.soundInfo(music,20,32);
