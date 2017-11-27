@@ -33,7 +33,7 @@ demo.state0.prototype = {
         //adding all text
         text1 = game.add.text(50, 330, 'DIRECTIONS:', { font: '50px Arial', fill: '#ffffff' } );
 
-        text2 = game.add.text(50, 410, 'Use wasd controls to move.\nUse your cursor to shoot zombies.\nHealth and home boosters will\nincrease health\nProtect yourself and your home\nat all costs.', { font: '25px Arial', fill: '#ffffff' });
+        text2 = game.add.text(50, 410, 'Use wasd controls to move.\nUse your cursor to shoot zombies.\nHealth and home boosters will\nincrease health percentage\nProtect yourself and your home\nat all costs.', { font: '25px Arial', fill: '#ffffff' });
         
         text3 = game.add.text(700, 330, 'YOUR HUNTER:', { font: '50px Arial', fill: '#ffffff' } );
         
