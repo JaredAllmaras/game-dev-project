@@ -630,9 +630,9 @@ demo.state1.prototype = {
 	render: function() {
         //hitbox for debugging
         //game.debug.body(zombie);
-        game.debug.body(house);
+        /*game.debug.body(house);
         game.debug.body(zombieTwo);
-        game.debug.body(player);
+        game.debug.body(player);*/
         //game.debug.text('Time until event: ' + timer.duration.toFixed(0), 32, 32);
 		//game.debug.body(healthBoosts);
         //game.debug.soundInfo(music,20,32);
