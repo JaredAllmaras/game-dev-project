@@ -1,6 +1,7 @@
 //start screen
 var demo = {};
-var text;
+var text1;
+var text2;
 var counter = 0;
 demo.state0 = function(){};
 
@@ -9,8 +10,7 @@ demo.state0.prototype = {
     
     preload: function(){
          game.load.image('logo', 'assets/death_decimation logo.png');  
-         game.load.spritesheet('button', 'assets/sprites/button_sprite_sheet.png', 193, 71);
-        game.load.image('background','assets/starfield.jpg');
+        
     },
     
 //var button;
@@ -18,11 +18,7 @@ demo.state0.prototype = {
     
     create: function(){
         game.stage.backgroundColor = '#000000';
-        //background = game.add.tileSprite(0, 0, 1280,800, 'background');
-        var image = game.add.sprite(game.world.centerX - 95, 400, 'button');
-
-
-    
+        
         //loading in the logo
         var image = game.add.sprite(game.world.centerX, 225, 'logo');
         image.width = 600;
@@ -32,7 +28,9 @@ demo.state0.prototype = {
         //  Enables all kind of input actions on this image (click, etc)
         image.inputEnabled = true;
 
-        text = game.add.text(100, 80, '', { fill: '#ffffff' });
+        text1 = game.add.text(50, 350, 'DIRECTIONS:', { fill: '#ffffff' });
+        text2 = game.add.text(50, 400, 'Use wasd controls to move.\nUse your cursor to shoot zombies.\nProtect yourself and your home at all costs.', { fill: '#ffffff' });
+        
 
         image.events.onInputDown.add(listener, this);
     },
@@ -44,9 +42,6 @@ demo.state0.prototype = {
     
         
     }
-   /* whenbuttonispressed: function(){
-        game.state.start('state1');
-    }*/
 
 
     
