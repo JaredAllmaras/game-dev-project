@@ -37,7 +37,7 @@ demo.state0.prototype = {
         
         text3 = game.add.text(700, 330, 'YOUR HUNTER:', { font: '50px Arial', fill: '#ffffff' } );
         
-        startgame = game.add.text(game.world.centerX,700,'CLICK ANYWHERE TO START', { font: '50px Arial', fill: '#ffffff' });
+        startgame = game.add.text(game.world.centerX,700,'>CLICK ANYWHERE TO START<', { font: '50px Arial', fill: '#ffffff' });
         startgame.anchor.set(0.5);
         
         
