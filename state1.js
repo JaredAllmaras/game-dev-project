@@ -1,5 +1,5 @@
 //Start of gameplay
-var cursors, vel = 200, pathFinder, gameWidth, gameHeight, tileSize = 32, crosshair, collisions, grass, player, zombie, zombieTwo, houseZombies, zombies, barrelX, barrelY ,bullet, bullets, fireRate = 100, nextFire = 200, toggleCrateDelay = 500, nextToggle, house, healthBar, path, pathFinder, grid, gridBackup, healthBoosts, healthBoost, music, uiBar, statusBar, placeCrateTimer ,gameBar, zombieCount, isPlaceCrate = false, gunshot, zoneX, zoneY, randomX, randomY, zone2X, zone2Y, zone3X, zone3Y, zone4X, zone4Y;
+var cursors, vel = 200, pathFinder, gameWidth, gameHeight, tileSize = 32, crosshair, collisions, grass, player, zombie, zombieTwo, houseZombies, zombies, barrelX, barrelY ,bullet, bullets, fireRate = 100, nextFire = 200, toggleCrateDelay = 500, nextToggle, house, healthBar, path, pathFinder, grid, gridBackup, healthBoosts, healthBoost, music, uiBar, statusBar, placeCrateTimer ,gameBar, zombieCount, isPlaceCrate = false, gunshot, zoneX, zoneY, randomX, randomY, zone2X, zone2Y, zone3X, zone3Y, zone4X, zone4Y, shotgun, zombieNum;
 
 //player movement controls
 var spaceBar, w, a, s, d;
@@ -151,10 +151,10 @@ demo.state1.prototype = {
         
 
         //Spawns 50 zombie (25 targetting)
-        for ( var i = 0; i < 25; i++)
+        for ( var i = 0; i < 5; i++)
         {
             //generates random integer 
-            zoneX = game.rnd.integerInRange(100,300);
+            zoneX = game.rnd.integerInRange(100,1300);
             zoneY = game.rnd.integerInRange(100,2300);
             
 
@@ -169,7 +169,7 @@ demo.state1.prototype = {
          
             //generate random integer
   
-            zoneX = game.rnd.integerInRange(100,300);
+            zoneX = game.rnd.integerInRange(100,1300);
             zoneY = game.rnd.integerInRange(100,2300);
             
             zone2X = game.rnd.integerInRange(3000,3500);
@@ -183,17 +183,9 @@ demo.state1.prototype = {
             zombieTwo.setPath(path);
             houseZombies.add(zombieTwo);
             
-            
         }	
-        //ZOMBIE COUNT
-        /*
-		zombieCount = game.add.text(game.world.width - 150,10,'ZOMBIES: ' + zombie.count +'%', {font:'20px Cambria', fill: '#3add71'});
-		zombieCount.style.backgroundColor = '#b20000'
-		zombieCount.style.fontWeight = 'bold'
-		zombieCount.render = function(){
-		zombieCount.text = 'HOUSE : '+ Math.round(house.health) +'%';    
-		};
-        */
+
+        
 
         ////////////////////////////////
 		//HEALTH BOOST
@@ -243,7 +235,16 @@ demo.state1.prototype = {
         //console.log(uiBar.inWorld);
         
         
-
+        //ZOMBIE COUNT
+        zombieNum = 10
+		zombieCount = game.add.text(game.world.width - 150,10,'ZOMBIES: ' + zombieNum, {font:'20px Cambria', fill: ''});
+		zombieCount.style.backgroundColor = '#b20000'
+		zombieCount.style.fontWeight = 'bold'
+		zombieCount.render = function(){
+		zombieCount.text = 'HOUSE : '+ Math.round(house.health) +'%';    
+		};
+        zombieCount.fixedToCamera = true;
+        zombieCount.cameraOffset.setTo(350,750);
 		
 
 		//House Health Text Bar
@@ -255,7 +256,7 @@ demo.state1.prototype = {
 		};
 		
 		houseHealth.fixedToCamera = true;
-		houseHealth.cameraOffset.setTo(150,750);
+		houseHealth.cameraOffset.setTo(170,750);
         
         //House Anchoring
         game.physics.enable(house, Phaser.Physics.ARCADE);		
